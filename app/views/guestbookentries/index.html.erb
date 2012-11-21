@@ -1,0 +1,27 @@
+<h1>Listing guestbookentries</h1>
+
+<table>
+  <tr>
+    <th>Sender</th>
+    <th>Receiver</th>
+    <th>Content</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @guestbookentries.each do |guestbookentry| %>
+  <tr>
+    <td><%= guestbookentry.sender %></td>
+    <td><%= guestbookentry.receiver %></td>
+    <td><%= guestbookentry.content %></td>
+    <td><%= link_to 'Show', guestbookentry %></td>
+    <td><%= link_to 'Edit', edit_guestbookentry_path(guestbookentry) %></td>
+    <td><%= link_to 'Destroy', guestbookentry, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Guestbookentry', new_guestbookentry_path %>

@@ -1,0 +1,120 @@
+<p id="notice"><%= notice %></p>
+
+<br/>
+<br/>
+
+<%if @profile.user_id == current_user.id %>
+	<b><%= link_to 'Edit your profile', profile_edit_path %></b>
+	<b><%= link_to 'Private Messaging', messages_overview_path %></b>
+	<b><%= link_to 'Friends', friends_path %></b>
+<% end %>  
+
+
+<br/>
+<br/>
+<br/>
+
+<p>
+  <%= image_tag @profile.photo.url(:small) %>
+</p>
+
+<p>
+  <b>Lastname:</b>
+  <%= @profile.lastname %>
+</p>
+
+<p>
+  <b>Firstname:</b>
+  <%= @profile.firstname %>
+</p>
+
+<p>
+  <b>Birthdate:</b>
+  <%= @profile.birthdate %>
+</p>
+
+<p>
+  <b>Phonenumber:</b>
+  <%= @profile.phonenumber %>
+</p>
+
+<p>
+  <b>Street:</b>
+  <%= @profile.street %>
+</p>
+
+<p>
+  <b>Number:</b>
+  <%= @profile.number %>
+</p>
+
+<p>
+  <b>Postalcode:</b>
+  <%= @profile.postalcode %>
+</p>
+
+<p>
+  <b>City:</b>
+  <%= @profile.city %>
+</p>
+
+<p>
+  <b>Gender:</b>
+  <%= @profile.gender %>
+</p>
+
+<p>
+  <b>Hobbies:</b>
+  <%= @profile.hobbies %>
+</p>
+
+<p>
+  <b>Jobs:</b>
+  <%= @profile.jobs %>
+</p>
+
+<p>
+  <b>Sports:</b>
+  <%= @profile.sports %>
+</p>
+
+<p>
+  <b>Education:</b>
+  <%= @profile.education %>
+</p>
+
+
+
+<!--|
+<%= link_to 'Back', profiles_path %>-->
+
+<br/>
+<br/>
+
+<h1>Guestbook</h1> <b><%= link_to 'New Guestbook Entry', new_guestbookentry_path(@profile) %></b>  
+
+<br/>
+
+<table>
+  <tr>
+    <th>Author:</th>
+    <th>Content:</th>
+    <th>Date:</th>
+    <th></th>
+  </tr>
+
+<% @guestbookentries.each do |entry| %>
+  <tr>
+    <td><%= entry.sender %></td>
+    <td><%= entry.content %></td>
+    <td><%= entry.created_at %></td>
+    <%if @profile.user_id == current_user.id %>
+    	<td><%= link_to 'Delete', delete_guestbookentry_path(entry), confirm: 'Are you sure?', method: :delete %></td>
+   	<%else%>
+   		<td></td>
+   	<%end%>
+  </tr>
+<% end %>
+</table>
+
+

@@ -1,0 +1,47 @@
+<h1>Listing profiles</h1>
+
+<table>
+  <tr>
+    <th>Lastname</th>
+    <th>Firstname</th>
+    <th>Birthdate</th>
+    <th>Phonenumber</th>
+    <th>Street</th>
+    <th>Number</th>
+    <th>Postalcode</th>
+    <th>City</th>
+    <th>Gender</th>
+    <th>Hobbies</th>
+    <th>Jobs</th>
+    <th>Sports</th>
+    <th>Education</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @profiles.each do |profile| %>
+  <tr>
+    <td><%= profile.lastname %></td>
+    <td><%= profile.firstname %></td>
+    <td><%= profile.birthdate %></td>
+    <td><%= profile.phonenumber %></td>
+    <td><%= profile.street %></td>
+    <td><%= profile.number %></td>
+    <td><%= profile.postalcode %></td>
+    <td><%= profile.city %></td>
+    <td><%= profile.gender %></td>
+    <td><%= profile.hobbies %></td>
+    <td><%= profile.jobs %></td>
+    <td><%= profile.sports %></td>
+    <td><%= profile.education %></td>
+    <td><%= link_to 'Show', profile %></td>
+    <td><%= link_to 'Edit', edit_profile_path(profile) %></td>
+    <td><%= link_to 'Destroy', profile, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Profile', new_profile_path %>

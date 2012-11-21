@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  sender: MyString
+  reveiver: MyString
+  content: MyText
+  read: false
+
+two:
+  sender: MyString
+  reveiver: MyString
+  content: MyText
+  read: false

@@ -1,0 +1,66 @@
+
+<h1>Your Friends</h1>
+<%if @friends%>
+<table>
+  <tr>
+    <th>Name</th>
+    <th></th>
+  </tr>
+<% @friends.each do |friendlistentry|  %>
+  <tr>
+    <td><%= link_to friendlistentry.friend, profile_path(User.find_by_email(friendlistentry.friend).profile)%></td>
+    <td><%= link_to 'Delete Friendship', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+
+<br />
+<h1>Incoming Requests</h1>
+<% if @incomingrequests%>
+<table>
+  <tr>
+    <th>Name</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @incomingrequests.each do |friendlistentry| %>
+  <tr>
+    <td><%= link_to friendlistentry.friend, profile_path(User.find_by_email(friendlistentry.friend).profile) %></td>
+    <td><%= link_to 'Delete Request', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= link_to 'Confirm Request', confirm_friend_request_path(friendlistentry) %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+<% end %>
+
+
+<h1>Outgoing Requests</h1>
+<% if @outgoingrequests%>
+<table>
+  <tr>
+    <th>Name</th>
+    <th></th>
+  </tr>
+
+<% @outgoingrequests.each do |friendlistentry| %>
+  <tr>
+    <!--<td><%= link_to friendlistentry.friend, profile_path(User.find_by_email(friendlistentry.friend).profile) %></td>-->
+    <td><%= friendlistentry.friend %></td>
+    <td><%= link_to 'Delete Request', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+<% end %>
+
+<br />
+
+<%= link_to 'Add a friend', new_friendlistentry_path %>
+
+<br />
+<br />
+
+<%= link_to 'Back', profiles_path %>

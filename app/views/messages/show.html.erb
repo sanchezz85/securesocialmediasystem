@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Sender:</b>
+  <%= @message.sender %>
+</p>
+<p>
+  <b>Receiver</b>
+  <%= @message.receiver %>
+</p>
+
+<p>
+  <b>Subject</b>
+  <%= @message.subject %>
+</p>
+
+<p>
+  <b>Content:</b>
+  <%= @message.content %>
+</p>
+
+
+<%= link_to 'Back', messages_path %>

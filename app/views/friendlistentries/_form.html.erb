@@ -1,0 +1,22 @@
+<%= form_for(@friendlistentry) do |f| %>
+  <% if @friendlistentry.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@friendlistentry.errors.count, "error") %> prohibited this friendlistentry from being saved:</h2>
+
+      <ul>
+      <% @friendlistentry.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :friend %><br />
+    <%= f.collection_select(:friend,@users, :email, :email) %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

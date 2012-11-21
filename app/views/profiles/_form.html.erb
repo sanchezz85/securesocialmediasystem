@@ -1,0 +1,72 @@
+<%= form_for @profile,:url=> profiles_path  ,:html => {:multipart => true} do |f| %>
+  <% if @profile.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this profile from being saved:</h2>
+
+      <ul>
+      <% @profile.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :lastname %><br />
+    <%= f.text_field :lastname %>
+  </div>
+  <div class="field">
+    <%= f.label :firstname %><br />
+    <%= f.text_field :firstname %>
+  </div>
+  <div class="field">
+    <%= f.label :birthdate %><br />
+    <%= f.date_select :birthdate, start_year: Time.now.year - 100, end_year: Time.now.year %>
+  </div>
+  <div class="field">
+    <%= f.label :phonenumber %><br />
+    <%= f.text_field :phonenumber %>
+  </div>
+  <div class="field">
+    <%= f.label :street %><br />
+    <%= f.text_field :street %>
+  </div>
+  <div class="field">
+    <%= f.label :number %><br />
+    <%= f.text_field :number %>
+  </div>
+  <div class="field">
+    <%= f.label :postalcode %><br />
+    <%= f.text_field :postalcode %> 
+  </div>
+  <div class="field">
+    <%= f.label :city %><br />
+    <%= f.text_field :city %>
+  </div>
+  <div class="field">
+    <%= f.label :gender %><br />
+    Male <%= f.radio_button :gender, 'male' %>
+    Female <%= f.radio_button :gender, 'female' %>
+  </div>
+  <div class="field">
+    <%= f.label :hobbies %><br />
+    <%= f.text_area :hobbies %>
+  </div>
+  <div class="field">
+    <%= f.label :jobs %><br />
+    <%= f.text_area :jobs %>
+  </div>
+  <div class="field">
+    <%= f.label :sports %><br />
+    <%= f.text_area :sports %>
+  </div>
+  <div class="field">
+    <%= f.label :education %><br />
+    <%= f.text_area :education %>
+  </div>
+  <p><%= f.file_field :photo%></p>
+  
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
