@@ -1,6 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
+  #work around for csrf-problem with json
+  skip_before_filter :verify_authenticity_token
+  
   helper_method :current_user
 
   #Get the current user (logged in)
@@ -8,7 +11,6 @@ class ApplicationController < ActionController::Base
   def current_user
     @current_user ||= User.find(session[:user_id]) if session[:user_id]
   end
-  
   
   #Get the home-server ip for registration/login
   protected
@@ -23,15 +25,15 @@ class ApplicationController < ActionController::Base
     Socket.do_not_reverse_lookup = orig
   end
   
-  
   #Get all nodes from central services server
   #ToDo: WS-call to receive all nodes
   protected
   def get_all_nodes
-    @nodes = ["192.168.3.3"]
+    @nodes = ["192.168.1.77"]
   end
   
   #Get all user globally
+  #ToDo: Get all users from central server
   protected
   def get_all_user
     connection = Faraday::Connection.new(:headers => {:accept =>'application/json'})
@@ -39,25 +41,19 @@ class ApplicationController < ActionController::Base
     @nodes = get_all_nodes
     @all_user = []
     #@nodes.each do |node|
-    #@jsonstring = '[{"created_at":"2012-11-10T15:46:01Z","email":"maier6@hm.edu@192.168.3.2","homeserver":"192.168.3.2","id":1,"password_hash":"$2a$10$Dv/i2OoSmgEawERE6KvXQOj6Nw/ipZEeZMg4UHZgor9aTBywy1kd.","password_salt":"$2a$10$Dv/i2OoSmgEawERE6KvXQO","updated_at":"2012-11-10T15:46:01Z"},{"created_at":"2012-11-10T16:57:32Z","email":"andreasmaier1985@gmx.net@192.168.1.27","homeserver":"192.168.1.27","id":2,"password_hash":"$2a$10$2UUeJOq79HhMV8IaeUs/MutpuPpPcBB4cLjRDDgCjG6Oo0HoVBLiS","password_salt":"$2a$10$2UUeJOq79HhMV8IaeUs/Mu","updated_at":"2012-11-10T16:57:32Z"}]'              
-     #@jsonstring = connection.get('localhost:3000/users/index') #ToDo: change "localhost" to "node"!!!!
-     #@jsonstring = connection.get do |req|
-        #req.url  'localhost:3000/users/index'
-        #req.headers['Content-Type'] = 'application/json'
-     #end
      response = connection.get do |req|
-       req.url 'http://192.168.3.3:3000/users/index'
+       req.url "http://" + get_all_nodes.first+ ":3000/users/index"
        req.headers['Content-Type'] = 'application/json'
      end
-     
-      parsed_json = j.decode(response.body)
-      parsed_json.each do |u| # convert json to user objects
-         user = User.new
-         user.email = u["email"]
-         user.id = u["id"]
-         user.homeserver = u["homeserver"]
-         @all_user<<user
-      end
+     parsed_json = j.decode(response.body)
+     logger.info("get_all_user: received and decoded json with user info: " + parsed_json.to_s)
+     parsed_json.each do |u| # convert json to user objects
+        user = User.new
+        user.email = u["email"]
+        user.id = u["id"]
+        user.homeserver = u["homeserver"]
+        @all_user<<user
+     end
     #end
   return @all_user  
   end 

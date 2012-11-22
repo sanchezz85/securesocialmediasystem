@@ -10,8 +10,7 @@ class SessionsController < ApplicationController
         redirect_to new_profile_path,:notice => "Logged in! Please create your profile now!"
       else
         redirect_to "/profiles", :notice => "Logged in!"
-      end
-      
+      end 
     else
       flash.now.alert = "Invalid email or password"
       render "new"
