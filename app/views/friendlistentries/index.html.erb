@@ -8,7 +8,11 @@
   </tr>
 <% @friends.each do |friendlistentry|  %>
   <tr>
-    <td><%= friendlistentry.friend %></td>
+  	<% if friendlistentry.friend.eql?(current_user.email) %>
+  		<td><%= friendlistentry.owner %></td>
+  	<% else %>
+    	<td><%= friendlistentry.friend %></td>
+    <% end %>	
     <td><%= link_to 'Delete Friendship', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
@@ -27,7 +31,7 @@
 
 <% @incomingrequests.each do |friendlistentry| %>
   <tr>
-     <td><%= friendlistentry.friend %></td>
+     <td><%= friendlistentry.owner %></td>
     <td><%= link_to 'Delete Request', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
     <td><%= link_to 'Confirm Request', confirm_friend_request_path(friendlistentry) %></td>
   </tr>

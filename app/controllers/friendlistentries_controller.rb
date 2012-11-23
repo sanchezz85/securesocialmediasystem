@@ -46,6 +46,7 @@ class FriendlistentriesController < ApplicationController
   def create
     @friendlistentry = Friendlistentry.new(params[:friendlistentry])
     @friendlistentry.confirmation = false
+    @friendlistentry.owner = current_user.email
     if Friendlistentry.where(:friend => @friendlistentry.friend , :user_id => current_user.id).exists?
       flash[:notice]= "Either friendship already exists or friendship request has been sent" 
       redirect_to action: "index"
@@ -80,6 +81,7 @@ class FriendlistentriesController < ApplicationController
     @friendlistentry = Friendlistentry.new
     @friendlistentry.friend = parsed_json["friend"]
     @friendlistentry.user_id = parsed_json["user_id"]
+    @friendlistentry.owner = parsed_json["owner"]
     @friendlistentry.confirmation = parsed_json["confirmation"]
     if @friendlistentry.save
       logger.info("remote_create: friendlistentry added:" + parsed_json.to_s)
@@ -120,15 +122,17 @@ class FriendlistentriesController < ApplicationController
   def confirmrequest
     @friendlistentry = Friendlistentry.find(params[:id])
     @friendlistentry.confirmation = true
-    @friendlistentry.save
-    #check wheter friend is located on a remote server
-    if is_remote_user?(@friendlistentry.friend)
-      logger.info("remote_confirmrequest is required!")
-      remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remoteconfirm"
-      response = post_friendlistentry(remote_url,@friendlistentry)
-      logger.info("friendlistentry sent to remote_confirm with Result: " + response)   
+    if @friendlistentry.save
+      logger.info("confirmrequest: friendlistentry confirmed!")
+      #check wheter friend is located on a remote server
+      if is_remote_user?(@friendlistentry.friend) # Owner not friend!
+        logger.info("remote_confirmrequest is required!")
+        remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remoteconfirm"
+        response = post_friendlistentry(remote_url,@friendlistentry)
+        logger.info("friendlistentry sent to remote_confirm with Result: " + response)   
+      end
+      redirect_to friends_path
     end
-    redirect_to friends_path
   end
   
    # Get /friendlistentries/remoteconfirm
