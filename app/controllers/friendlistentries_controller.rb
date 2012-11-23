@@ -24,7 +24,6 @@ class FriendlistentriesController < ApplicationController
     @friendlistentry = Friendlistentry.new
     #@users = get_all_user
     @users = get_all_user
-    debugger
     #current_user.friendlistentries.each do |entry| #remove friends
       #@user_to_be_deleted = User.find(entry.friend)
       #@users.delete(@user_to_be_deleted)
@@ -53,26 +52,22 @@ class FriendlistentriesController < ApplicationController
     else
       current_user.friendlistentries<<@friendlistentry
         if @friendlistentry.save
+          flash[:notice]= "Friendship request has been sent!" 
           logger.info("New friendlistentry saved: Owner: " + current_user.email + " with friend: " + @friendlistentry.friend)
-          #remote friendlistentry creation
-          ##extract remote url
-          list = @friendlistentry.friend.split("@")
-          remote_url = "http://" +list.last + ":3000/friendlistentries/remotecreate"
-          ##convert friendlistentry into json
-          j = ActiveSupport::JSON
-          @json_friendlistentry = j.encode(@friendlistentry)
-
-          ##open faraday connection and post json data to remote url
-          connection = Faraday::Connection.new#(:headers => {:accept =>'application/json'})
-          response = connection.post do |req|
-            req.url  remote_url
-            req["Content-Type"] = "application/json"
-            req.body = @json_friendlistentry   
+          #check wheter friend is located on a remote server
+          if is_remote_user?(@friendlistentry.friend)
+            logger.info("remote_create for friendlistentry is required!")
+            #remote friendlistentry creation
+            remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remotecreate"
+            response = post_friendlistentry(remote_url,@friendlistentry)
+            logger.info("friendlistentry sent to remote_create with Result: " + response)
+            redirect_to action: "index"
+          else
+            logger.info("No need for friendlistentry remote_create!")
+            redirect_to action: "index"
           end
-          logger.info("friendlistentry sent to remote_create:" + @json_friendlistentry + "With Result: " + (j.decode(response.body)).to_s)
-          redirect_to action: "index"
         else
-          logger.warn("Error while saving friendlistentry!")
+          logger.info("Error while saving friendlistentry!")
           render action: "new" 
         end
       end
@@ -126,9 +121,47 @@ class FriendlistentriesController < ApplicationController
     @friendlistentry = Friendlistentry.find(params[:id])
     @friendlistentry.confirmation = true
     @friendlistentry.save
+    #check wheter friend is located on a remote server
+    if is_remote_user?(@friendlistentry.friend)
+      logger.info("remote_confirmrequest is required!")
+      remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remoteconfirm"
+      response = post_friendlistentry(remote_url,@friendlistentry)
+      logger.info("friendlistentry sent to remote_confirm with Result: " + response)   
+    end
     redirect_to friends_path
   end
   
-
-   
+   # Get /friendlistentries/remoteconfirm
+  def remote_confirm
+    j = ActiveSupport::JSON
+    parsed_json = j.decode(request.body)
+    friend = parsed_json["friend"]
+    user_id = parsed_json["user_id"]
+    @friendlistentry = Friendlistentry.where("user_id =? AND friend =?",user_id, friend)
+    @friendlistentry.confirmation = true
+    if @friendlistentry.save
+      logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
+      render json: '{"remote_create status":"successful"}'
+    else
+      render json: '{"remote_create status":"successful"}'
+    end 
+  end
+  
+  #post a friendlistentry as json to a remote url and return response
+  private
+  def post_friendlistentry(remote_url,friendlistentry)
+    #convert friendlistentry into json
+    j = ActiveSupport::JSON
+    json_friendlistentry = j.encode(friendlistentry)
+    #open faraday connection and post json data to remote url
+    connection = Faraday::Connection.new
+    response = connection.post do |req|
+      req.url  remote_url
+      req["Content-Type"] = "application/json"
+      req.body = json_friendlistentry   
+    end
+    return (j.decode(response.body)).to_s 
+  end
+  
+ 
 end

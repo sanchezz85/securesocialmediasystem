@@ -39,10 +39,10 @@ class ApplicationController < ActionController::Base
     connection = Faraday::Connection.new(:headers => {:accept =>'application/json'})
     j = ActiveSupport::JSON
     @nodes = get_all_nodes
-    @all_user = []
-    #@nodes.each do |node|
+    @all_user = User.all
+    @nodes.each do |node|
      response = connection.get do |req|
-       req.url "http://" + get_all_nodes.first+ ":3000/users/index"
+       req.url "http://" + node + ":3000/users/index"
        req.headers['Content-Type'] = 'application/json'
      end
      parsed_json = j.decode(response.body)
@@ -54,11 +54,26 @@ class ApplicationController < ActionController::Base
         user.homeserver = u["homeserver"]
         @all_user<<user
      end
-    #end
-  return @all_user  
+    end
+    return @all_user  
+  end
+  
+  #parse for homeserver url
+  protected
+  def parse_homeserver(string)
+    stringlist = string.split("@")
+    return stringlist.last
+  end
+  
+  #Checks whether a user is located on a remote server
+  protected
+  def is_remote_user?(username)
+    remote_ip = parse_homeserver(username)
+    if remote_ip.eql?(local_ip)
+      return false
+    else
+      return true
+    end 
   end 
-  
-  
-  
-  
+ 
 end

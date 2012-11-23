@@ -8,7 +8,7 @@
   </tr>
 <% @friends.each do |friendlistentry|  %>
   <tr>
-    <td><%= link_to friendlistentry.friend, profile_path(User.find_by_email(friendlistentry.friend).profile)%></td>
+    <td><%= friendlistentry.friend %></td>
     <td><%= link_to 'Delete Friendship', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>

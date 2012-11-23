@@ -54,6 +54,7 @@ class ProfilesController < ApplicationController
   def create
     @profile = Profile.new(params[:profile])
     current_user.profile  = @profile
+    @profile.email = current_user.email
     
     respond_to do |format|
       if @profile.save
