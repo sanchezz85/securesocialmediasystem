@@ -1,56 +1,23 @@
 class MessagesController < ApplicationController
+  
   # GET /messages
   # GET /messages.json
   def index
-    #@incomingmessages = current_user.messages
     @incomingmessages = Message.where("receiver=?", current_user.email).order("created_at DESC")
     @outgoingmessages = Message.where("sender=?", current_user.email).order("created_at DESC")
-  
   end
 
   # GET /messages/1
   # GET /messages/1.json
   def show
     @message = Message.find(params[:id])
-    if current_user.messages.exists?(@message)
-      @message.read = true
-      if @message.save
-        logger.info("Message from " + @message.sender + " to " + @message.receiver + "has been saved with read-status:" + message.read)
-        #check wheter sender is located on a remote server
-        if is_remote_user?(@message.sender)
-          logger.info("remote_show for updating of the message's read-status is required!")
-          #remote message update
-          remote_url = "http://" + parse_homeserver(@message.sender) + ":3000/messages/remoteshow"
-          response = post_to_remote_url(remote_url,@message)
-          logger.info("message sent to remote_show with Result: " + response)
-        else
-          logger.info("No need for message remote_show!")
-        end      
-      else
-        logger.info("Error while saving message for updating read-status!")  
-      end
-    end
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @message }
-    end 
-  end
-  
-    # POST /messages/remoteshow
-  def remote_show
-    j = ActiveSupport::JSON
-    parsed_json = j.decode(request.body)
-    receiver = parsed_json["receiver"]
-    sender = parsed_json["sender"]
-    created_at = parsed_json["created_at"]
-    @message = Message.where("receiver =? AND sender =? AND created_at =?",receiver,sender,created_at).first
     @message.read = true
-    if @friendlistentry.save
-      logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
-      render json: '{"remote_confirm status":"successful"}'
-    else
-      render json: '{"remote_confirm status":"failure"}'
-    end 
+    if @message.save
+      respond_to do |format|
+        format.html # show.html.erb
+        format.json { render json: @message }
+      end 
+    end
   end
   
   # GET /messages/new
@@ -160,8 +127,8 @@ class MessagesController < ApplicationController
     parsed_json = j.decode(request.body)
     receiver = parsed_json["receiver"]
     sender = parsed_json["sender"]
-    created_at = parsed_json["created_at"]
-    @message = Message.where("receiver =? AND sender =? AND created_at =?",receiver,sender,created_at).first
+    subject = parsed_json["subject"]
+    @message = Message.where("receiver =? AND sender =? AND subject =?",receiver,sender,subject).first
     if @message.destroy
       logger.info("remote_destroy: message destroyed:" + parsed_json.to_s)
       render json: '{"remote_destroy status":"successful"}'
