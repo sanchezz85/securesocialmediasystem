@@ -125,9 +125,9 @@ class FriendlistentriesController < ApplicationController
     if @friendlistentry.save
       logger.info("confirmrequest: friendlistentry confirmed!")
       #check wheter friend is located on a remote server
-      if is_remote_user?(@friendlistentry.friend) # Owner not friend!
+      if is_remote_user?(@friendlistentry.owner) # Owner not friend!
         logger.info("remote_confirmrequest is required!")
-        remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remoteconfirm"
+        remote_url = "http://" + parse_homeserver(@friendlistentry.owner) + ":3000/friendlistentries/remoteconfirm"
         response = post_friendlistentry(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_confirm with Result: " + response)   
       end
@@ -140,8 +140,8 @@ class FriendlistentriesController < ApplicationController
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
     friend = parsed_json["friend"]
-    user_id = parsed_json["user_id"]
-    @friendlistentry = Friendlistentry.where("user_id =? AND friend =?",user_id, friend)
+    user_id = parsed_json["owner"]
+    @friendlistentry = Friendlistentry.where("owner =? AND friend =?",owner, friend)
     @friendlistentry.confirmation = true
     if @friendlistentry.save
       logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
