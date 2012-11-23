@@ -14,6 +14,9 @@ SecureSocialMediaSystem::Application.routes.draw do
   get "guestbookentries" => "profiles#show"
   resources :guestbookentries
 
+  post "messages/remotedestroy" => "messages#remote_destroy"
+  post "messages/remoteshow" => "messages#remote_show"
+  post "messages/remotecreate" => "messsages#remote_create"
   get "messages" => "messages#index", as: "messages_overview"
   resources :messages
 

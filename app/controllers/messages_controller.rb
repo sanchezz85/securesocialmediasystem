@@ -12,23 +12,52 @@ class MessagesController < ApplicationController
   # GET /messages/1.json
   def show
     @message = Message.find(params[:id])
-    
     if current_user.messages.exists?(@message)
       @message.read = true
-      @message.save
+      if @message.save
+        logger.info("Message from " + @message.sender + " to " + @message.receiver + "has been saved with read-status:" + message.read)
+        #check wheter sender is located on a remote server
+        if is_remote_user?(@message.sender)
+          logger.info("remote_show for updating of the message's read-status is required!")
+          #remote message update
+          remote_url = "http://" + parse_homeserver(@message.sender) + ":3000/messages/remoteshow"
+          response = post_to_remote_url(remote_url,@message)
+          logger.info("message sent to remote_show with Result: " + response)
+        else
+          logger.info("No need for message remote_show!")
+        end      
+      else
+        logger.info("Error while saving message for updating read-status!")  
+      end
     end
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @message }
-    end
+    end 
   end
-
+  
+    # POST /messages/remoteshow
+  def remote_show
+    j = ActiveSupport::JSON
+    parsed_json = j.decode(request.body)
+    receiver = parsed_json["receiver"]
+    sender = parsed_json["sender"]
+    created_at = parsed_json["created_at"]
+    @message = Message.where("receiver =? AND sender =? AND created_at =?",receiver,sender,created_at).first
+    @message.read = true
+    if @friendlistentry.save
+      logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
+      render json: '{"remote_confirm status":"successful"}'
+    else
+      render json: '{"remote_confirm status":"failure"}'
+    end 
+  end
+  
   # GET /messages/new
   # GET /messages/new.json
   def new
     @message = Message.new
-    @users = User.all
+    @users = get_all_user
     @users.delete(current_user)
 
     respond_to do |format|
@@ -49,15 +78,42 @@ class MessagesController < ApplicationController
     @message.sender = current_user.email
     @receiver = User.find_by_email(@message.receiver)
     @receiver.messages<<@message
-
-    respond_to do |format|
-      if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully created.' }
-        format.json { render json: @message, status: :created, location: @message }
+    if @message.save
+      logger.info("Message from " + @message.sender + " has been sent to " + @message.receiver)
+      #check wheter receiver is located on a remote server
+      if is_remote_user?(@message.receiver)
+        logger.info("remote_create for message is required!")
+        #remote message creation
+        remote_url = "http://" + parse_homeserver(@message.receiver) + ":3000/messages/remotecreate"
+        response = post_to_remote_url(remote_url,@message)
+        logger.info("message sent to remote_create with Result: " + response)
+        redirect_to @message, notice: 'Message was successfully created.'  
       else
-        format.html { render action: "new" }
-        format.json { render json: @message.errors, status: :unprocessable_entity }
-      end
+        logger.info("No need for message remote_create!")
+        redirect_to @message, notice: 'Message was successfully created.'   
+      end      
+    else
+      logger.info("Error while saving message!")
+      render action: "new" 
+    end
+  end
+
+  # POST /messages/remotecreate
+  def remote_create
+    j = ActiveSupport::JSON
+    parsed_json = j.decode(request.body)
+    @message = Friendlistentry.new
+    @message.receiver = parsed_json["receiver"]
+    @message.sender= parsed_json["sender"]
+    @message.content = parsed_json["content"]
+    @message.subject = parsed_json["subject"]
+    @message.read = parsed_json["read"]
+    @message.created_at = parsed_json["created_at"]
+    if @message.save
+      logger.info("remote_create: message added:" + parsed_json.to_s)
+      render json: '{"remote_create status":"successful"}'
+    else
+      render json: '{"remote_create status":"failure"}'
     end
   end
 
@@ -65,7 +121,6 @@ class MessagesController < ApplicationController
   # PUT /messages/1.json
   def update
     @message = Message.find(params[:id])
-
     respond_to do |format|
       if @message.update_attributes(params[:message])
         format.html { redirect_to @message, notice: 'Message was successfully updated.' }
@@ -81,11 +136,38 @@ class MessagesController < ApplicationController
   # DELETE /messages/1.json
   def destroy
     @message = Message.find(params[:id])
-    @message.destroy
-
-    respond_to do |format|
-      format.html { redirect_to messages_url }
-      format.json { head :no_content }
+    if @message.destroy
+      logger.info("messages#destroy:  message destroyed!")
+      if is_remote_user?(@message.sender)
+        logger.info("remote_destroy is required!")
+        remote_url = "http://" + parse_homeserver(@message.sender) + ":3000/messages/remotedestroy"
+        response = post_to_remote_url(remote_url,@message)
+        logger.info("message sent to remote_destroy with Result: " + response)    
+      end      
+      if is_remote_user?(@message.receiver)
+        logger.info("remote_destroy is required!")
+        remote_url = "http://" + parse_homeserver(@message.receiver) + ":3000/messages/remotedestroy"
+        response = post_to_remote_url(remote_url,@message)
+        logger.info("message sent to remote_destroy with Result: " + response)    
+      end 
+      redirect_to messages_url 
     end
   end
+  
+  # Get /messages/remotedestroy
+  def remote_destroy
+    j = ActiveSupport::JSON
+    parsed_json = j.decode(request.body)
+    receiver = parsed_json["receiver"]
+    sender = parsed_json["sender"]
+    created_at = parsed_json["created_at"]
+    @message = Message.where("receiver =? AND sender =? AND created_at =?",receiver,sender,created_at).first
+    if @message.destroy
+      logger.info("remote_destroy: message destroyed:" + parsed_json.to_s)
+      render json: '{"remote_destroy status":"successful"}'
+    else
+      render json: '{"remote_destory status":"failure"}'
+    end 
+  end
+
 end

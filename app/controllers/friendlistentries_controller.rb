@@ -13,6 +13,7 @@ class FriendlistentriesController < ApplicationController
     @friendlistentry = Friendlistentry.new
     #@users = get_all_user
     @users = get_all_user
+    @users.delete(current_user)
     #current_user.friendlistentries.each do |entry| #remove friends
       #@user_to_be_deleted = User.find(entry.friend)
       #@users.delete(@user_to_be_deleted)
@@ -22,7 +23,6 @@ class FriendlistentriesController < ApplicationController
       format.json { render json: @friendlistentry }
     end
   end
-
 
   # POST /friendlistentries
   # POST /friendlistentries.json
@@ -94,7 +94,6 @@ class FriendlistentriesController < ApplicationController
         logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
       end        
       redirect_to friendlistentries_url 
-
     end
   end
   
@@ -146,20 +145,5 @@ class FriendlistentriesController < ApplicationController
     end 
   end
   
-  #post a friendlistentry as json to a remote url and return response
-  private
-  def post_friendlistentry(remote_url,friendlistentry)
-    #convert friendlistentry into json
-    j = ActiveSupport::JSON
-    json_friendlistentry = j.encode(friendlistentry)
-    #open faraday connection and post json data to remote url
-    connection = Faraday::Connection.new
-    response = connection.post do |req|
-      req.url  remote_url
-      req["Content-Type"] = "application/json"
-      req.body = json_friendlistentry   
-    end
-    return (j.decode(response.body)).to_s 
-  end
   
 end
