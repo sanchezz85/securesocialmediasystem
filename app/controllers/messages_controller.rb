@@ -76,8 +76,8 @@ class MessagesController < ApplicationController
   def create
     @message = Message.new(params[:message])
     @message.sender = current_user.email
-    @receiver = User.find_by_email(@message.receiver)
-    @receiver.messages<<@message
+    #@receiver = User.find_by_email(@message.receiver)
+    #@receiver.messages<<@message
     if @message.save
       logger.info("Message from " + @message.sender + " has been sent to " + @message.receiver)
       #check wheter receiver is located on a remote server

@@ -16,7 +16,7 @@ SecureSocialMediaSystem::Application.routes.draw do
 
   post "messages/remotedestroy" => "messages#remote_destroy"
   post "messages/remoteshow" => "messages#remote_show"
-  post "messages/remotecreate" => "messsages#remote_create"
+  post "messages/remotecreate" => "messages#remote_create"
   get "messages" => "messages#index", as: "messages_overview"
   resources :messages
 
