@@ -7,17 +7,6 @@ class FriendlistentriesController < ApplicationController
     @incomingrequests = Friendlistentry.where("friend =? AND confirmation =?",current_user.email, false)
   end
 
-  # GET /friendlistentries/1
-  # GET /friendlistentries/1.json
-  def show
-    @friendlistentry = Friendlistentry.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @friendlistentry }
-    end
-  end
-
   # GET /friendlistentries/new
   # GET /friendlistentries/new.json
   def new
@@ -34,12 +23,6 @@ class FriendlistentriesController < ApplicationController
     end
   end
 
-  # GET /friendlistentries/1/edit
-  def edit
-    @friendlistentry = Friendlistentry.find(params[:id])
-    @users = User.all
-    @users.delete(current_user)
-  end
 
   # POST /friendlistentries
   # POST /friendlistentries.json
@@ -60,7 +43,7 @@ class FriendlistentriesController < ApplicationController
             logger.info("remote_create for friendlistentry is required!")
             #remote friendlistentry creation
             remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remotecreate"
-            response = post_friendlistentry(remote_url,@friendlistentry)
+            response = post_to_remote_url(remote_url,@friendlistentry)
             logger.info("friendlistentry sent to remote_create with Result: " + response)
             redirect_to action: "index"
           else
@@ -91,21 +74,6 @@ class FriendlistentriesController < ApplicationController
     end
   end
   
-  # PUT /friendlistentries/1
-  # PUT /friendlistentries/1.json
-  def update
-    @friendlistentry = Friendlistentry.find(params[:id])
-
-    respond_to do |format|
-      if @friendlistentry.update_attributes(params[:friendlistentry])
-        format.html { redirect_to @friendlistentry, notice: 'Friendlistentry was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @friendlistentry.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # DELETE /friendlistentries/1
   # DELETE /friendlistentries/1.json
@@ -116,13 +84,13 @@ class FriendlistentriesController < ApplicationController
       if is_remote_user?(@friendlistentry.owner)
         logger.info("remote_destroy is required!")
         remote_url = "http://" + parse_homeserver(@friendlistentry.owner) + ":3000/friendlistentries/remotedestroy"
-        response = post_friendlistentry(remote_url,@friendlistentry)
+        response = post_to_remote_url(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
       end      
       if is_remote_user?(@friendlistentry.friend)
         logger.info("remote_destroy is required!")
         remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remotedestroy"
-        response = post_friendlistentry(remote_url,@friendlistentry)
+        response = post_to_remote_url(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
       end        
       redirect_to friendlistentries_url 
@@ -138,7 +106,7 @@ class FriendlistentriesController < ApplicationController
     owner = parsed_json["owner"]
     @friendlistentry = Friendlistentry.where("owner =? AND friend =?",owner, friend).first
     if @friendlistentry.destroy
-      logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
+      logger.info("remote_destroy: friendlistentry destroyed:" + parsed_json.to_s)
       render json: '{"remote_destroy status":"successful"}'
     else
       render json: '{"remote_destory status":"failure"}'
@@ -155,7 +123,7 @@ class FriendlistentriesController < ApplicationController
       if is_remote_user?(@friendlistentry.owner) # Owner not friend!
         logger.info("remote_confirmrequest is required!")
         remote_url = "http://" + parse_homeserver(@friendlistentry.owner) + ":3000/friendlistentries/remoteconfirm"
-        response = post_friendlistentry(remote_url,@friendlistentry)
+        response = post_to_remote_url(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_confirm with Result: " + response)   
       end
       redirect_to friends_path
@@ -194,5 +162,4 @@ class FriendlistentriesController < ApplicationController
     return (j.decode(response.body)).to_s 
   end
   
- 
 end
