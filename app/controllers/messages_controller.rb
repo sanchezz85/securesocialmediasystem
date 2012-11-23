@@ -102,7 +102,7 @@ class MessagesController < ApplicationController
   def remote_create
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
-    @message = Friendlistentry.new
+    @message = Message.new
     @message.receiver = parsed_json["receiver"]
     @message.sender= parsed_json["sender"]
     @message.content = parsed_json["content"]
