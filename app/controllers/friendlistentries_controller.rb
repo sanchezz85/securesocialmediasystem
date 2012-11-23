@@ -87,7 +87,7 @@ class FriendlistentriesController < ApplicationController
       logger.info("remote_create: friendlistentry added:" + parsed_json.to_s)
       render json: '{"remote_create status":"successful"}'
     else
-      render json: '{"remote_create status":"successful"}'
+      render json: '{"remote_create status":"failure"}'
     end
   end
   
@@ -111,11 +111,38 @@ class FriendlistentriesController < ApplicationController
   # DELETE /friendlistentries/1.json
   def destroy
     @friendlistentry = Friendlistentry.find(params[:id])
-    @friendlistentry.destroy
-    respond_to do |format|
-      format.html { redirect_to friendlistentries_url }
-      format.json { head :no_content }
+    if @friendlistentry.destroy
+      logger.info("friendlistentries#destroy:  friendlistentry destroyed!")
+      if is_remote_user?(@friendlistentry.owner)
+        logger.info("remote_destroy is required!")
+        remote_url = "http://" + parse_homeserver(@friendlistentry.owner) + ":3000/friendlistentries/remotedestroy"
+        response = post_friendlistentry(remote_url,@friendlistentry)
+        logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
+      end      
+      if is_remote_user?(@friendlistentry.friend)
+        logger.info("remote_destroy is required!")
+        remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remotedestroy"
+        response = post_friendlistentry(remote_url,@friendlistentry)
+        logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
+      end        
+      redirect_to friendlistentries_url 
+
     end
+  end
+  
+  # Get /friendlistentries/remotedestroy
+  def remote_destroy
+    j = ActiveSupport::JSON
+    parsed_json = j.decode(request.body)
+    friend = parsed_json["friend"]
+    owner = parsed_json["owner"]
+    @friendlistentry = Friendlistentry.where("owner =? AND friend =?",owner, friend).first
+    if @friendlistentry.destroy
+      logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
+      render json: '{"remote_destroy status":"successful"}'
+    else
+      render json: '{"remote_destory status":"failure"}'
+    end 
   end
   
   # Get confirmrequest/1
@@ -145,9 +172,9 @@ class FriendlistentriesController < ApplicationController
     @friendlistentry.confirmation = true
     if @friendlistentry.save
       logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
-      render json: '{"remote_create status":"successful"}'
+      render json: '{"remote_confirm status":"successful"}'
     else
-      render json: '{"remote_create status":"successful"}'
+      render json: '{"remote_confirm status":"failure"}'
     end 
   end
   
