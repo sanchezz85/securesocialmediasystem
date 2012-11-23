@@ -1,6 +1,6 @@
 SecureSocialMediaSystem::Application.routes.draw do
   
-  get "friendlistentries/remoteconfirm" => "friendlistentries#remote_confirm"
+  post "friendlistentries/remoteconfirm" => "friendlistentries#remote_confirm"
   post "friendlistentries/remotecreate" => "friendlistentries#remote_create"
   get "confirmrequest/:id" => "friendlistentries#confirmrequest", as: "confirm_friend_request"
   get "friendlistentries/:id/edit" => "friendlistentries#edit", as: "edit_friendlistentry"

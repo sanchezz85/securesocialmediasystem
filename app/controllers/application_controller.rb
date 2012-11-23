@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   #ToDo: WS-call to receive all nodes
   protected
   def get_all_nodes
-    @nodes = ["192.168.1.77"]
+    @nodes = ["192.168.1.77", "192.168.1.78"]
   end
   
   #Get all user globally
@@ -38,22 +38,28 @@ class ApplicationController < ActionController::Base
   def get_all_user
     connection = Faraday::Connection.new(:headers => {:accept =>'application/json'})
     j = ActiveSupport::JSON
-    @nodes = get_all_nodes
     @all_user = User.all
-    @nodes.each do |node|
-     response = connection.get do |req|
-       req.url "http://" + node + ":3000/users/index"
-       req.headers['Content-Type'] = 'application/json'
-     end
-     parsed_json = j.decode(response.body)
-     logger.info("get_all_user: received and decoded json with user info: " + parsed_json.to_s)
-     parsed_json.each do |u| # convert json to user objects
-        user = User.new
-        user.email = u["email"]
-        user.id = u["id"]
-        user.homeserver = u["homeserver"]
-        @all_user<<user
-     end
+    if @nodes
+      @nodes = get_all_nodes
+      @nodes.each do |node|
+        if !node.eql?(local_ip)
+          response = connection.get do |req|
+            req.url "http://" + node + ":3000/users/index"
+            req.headers['Content-Type'] = 'application/json'
+          end
+        end
+        parsed_json = j.decode(response.body)
+        logger.info("get_all_user: received and decoded json with user info: " + parsed_json.to_s)
+        parsed_json.each do |u| # convert json to user objects
+          user = User.new
+          user.email = u["email"]
+          user.id = u["id"]
+          user.homeserver = u["homeserver"]
+          @all_user<<user
+        end
+      end
+    else
+      logger.info("get_all_user: no other nodes available!")
     end
     return @all_user  
   end

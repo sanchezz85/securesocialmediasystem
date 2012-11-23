@@ -2,9 +2,9 @@ class FriendlistentriesController < ApplicationController
   # GET /friendlistentries
   # GET /friendlistentries.json
   def index
-    @friends = Friendlistentry.where("user_id =? AND confirmation =?",current_user.id, true)
+    @friends = Friendlistentry.where("(user_id =? OR friend =?)AND confirmation =?",current_user.id,current_user.email, true)
     @outgoingrequests = Friendlistentry.where("user_id =? AND confirmation =?",current_user.id, false)
-    @incomingrequests = Friendlistentry.where("friend =? AND confirmation =?",current_user.id, false)
+    @incomingrequests = Friendlistentry.where("friend =? AND confirmation =?",current_user.email, false)
   end
 
   # GET /friendlistentries/1
