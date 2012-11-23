@@ -140,8 +140,8 @@ class FriendlistentriesController < ApplicationController
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
     friend = parsed_json["friend"]
-    user_id = parsed_json["owner"]
-    @friendlistentry = Friendlistentry.where("owner =? AND friend =?",owner, friend)
+    owner = parsed_json["owner"]
+    @friendlistentry = Friendlistentry.where("owner =? AND friend =?",owner, friend).first
     @friendlistentry.confirmation = true
     if @friendlistentry.save
       logger.info("remote_confirm: friendlistentry confirmed:" + parsed_json.to_s)
