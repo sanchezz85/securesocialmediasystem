@@ -22,7 +22,8 @@ SecureSocialMediaSystem::Application.routes.draw do
   get "profiles/new", as: "new_profile"
   get "profiles/edit", as: "profile_edit"
   put "profiles" => "profiles#update", as: "profile_update"
-  get "profiles/:id" => "profiles#show", as: "profile"
+  #get "profiles/:id" => "profiles#show", as: "profile"
+  get "profiles/:email" => "profiles#show", as: "profile"
   get "profiles" => "profiles#show", as: "my_profile"
   resources :profiles
 

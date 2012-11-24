@@ -3,7 +3,7 @@
 <br/>
 <br/>
 
-<%if @profile.user_id == current_user.id %>
+<%if @profile.email == current_user.email %>
 	<b><%= link_to 'Edit your profile', profile_edit_path %></b>
 	<b><%= link_to 'Private Messaging', messages_overview_path %></b>
 	<b><%= link_to 'Friends', friends_path %></b>

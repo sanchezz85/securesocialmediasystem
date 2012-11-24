@@ -13,8 +13,17 @@ class ProfilesController < ApplicationController
   # GET /profiles/1
   # GET /profiles/1.json
   def show
-    if params[:id]
-      @profile = Profile.find(params[:id])
+    if params[:email]
+      #@profile = Profile.find(params[:id])
+      if is_remote_user?(params[:email])
+        
+        
+        #************ToDO: Weiterleitung zu remote server profile**************!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+        
+      else
+        @profile = Profile.where("email =?", params[:email] ).first
+      end
     else
       @profile = current_user.profile
     end

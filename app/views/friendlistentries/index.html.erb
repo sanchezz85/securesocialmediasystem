@@ -9,9 +9,9 @@
 <% @friends.each do |friendlistentry|  %>
   <tr>
   	<% if friendlistentry.friend.eql?(current_user.email) %>
-  		<td><%= friendlistentry.owner %></td>
+  		<td><%= link_to friendlistentry.owner, 'profiles?email='+friendlistentry.owner%></td>
   	<% else %>
-    	<td><%= friendlistentry.friend %></td>
+    	<td><%= link_to friendlistentry.friend , 'profiles?email='+friendlistentry.friend  %></td>
     <% end %>	
     <td><%= link_to 'Delete Friendship', friendlistentry, confirm: 'Are you sure?', method: :delete %></td>
   </tr>

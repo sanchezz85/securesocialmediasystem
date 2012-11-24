@@ -64,13 +64,12 @@ class GuestbookentriesController < ApplicationController
   def update
     @guestbookentry = Guestbookentry.find(params[:id])
     @guestbookentryowner = User.find_by_email(@guestbookentry.receiver)
-    @lastProfile = Profile.find_by_user_id(@guestbookentryowner.id)
     @guestbookentryowner.guestbookentries<<@guestbookentry
-    
-
+    @lastProfile = Profile.where("email =?",@guestbookentry.receiver).first
+   
     respond_to do |format|
       if @guestbookentry.update_attributes(params[:guestbookentry])
-        format.html { redirect_to profile_path(@lastProfile), notice: 'Guestbookentry was successfully updated.' }
+        format.html { redirect_to '/profiles?email='+@lastProfile.email , notice: 'Guestbookentry was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
