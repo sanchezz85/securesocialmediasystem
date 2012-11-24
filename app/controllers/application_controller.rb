@@ -13,6 +13,11 @@ class ApplicationController < ActionController::Base
   end
   
   protected
+  def remote_user
+    return session[:remote_user_email]
+  end
+  
+  protected
   def login_required
     if session[:user_email] || session[:remote_user_email]
       return true

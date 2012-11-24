@@ -6,7 +6,6 @@ class GuestbookentriesController < ApplicationController
   # GET /guestbookentries.json
   def index
     @guestbookentries = Guestbookentry.all
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @guestbookentries }
@@ -17,7 +16,6 @@ class GuestbookentriesController < ApplicationController
   # GET /guestbookentries/1.json
   def show
     @guestbookentry = Guestbookentry.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @guestbookentry }
@@ -29,12 +27,14 @@ class GuestbookentriesController < ApplicationController
   def new
     @guestbookentry = Guestbookentry.new
     @profile = Profile.find(params[:id])
-    @guestbookowner = User.find(@profile.user_id)
+    @guestbookowner = User.find_by_email(@profile.email)
     @guestbookentry.receiver = @guestbookowner.email
-    @guestbookentry.sender = current_user.email
+    if current_user
+      @guestbookentry.sender = current_user.email
+    else
+      @guestbookentry.sender = remote_user
+    end
     @guestbookentry.save
-    
-
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @guestbookentry }
@@ -50,7 +50,6 @@ class GuestbookentriesController < ApplicationController
   # POST /guestbookentries.json
   def create
     @guestbookentry = Guestbookentry.new(params[:guestbookentry])
-
     respond_to do |format|
       if @guestbookentry.save
         format.html { redirect_to @guestbookentry, notice: 'Guestbookentry was successfully created.' }
@@ -69,7 +68,6 @@ class GuestbookentriesController < ApplicationController
     @guestbookentryowner = User.find_by_email(@guestbookentry.receiver)
     @guestbookentryowner.guestbookentries<<@guestbookentry
     @lastProfile = Profile.where("email =?",@guestbookentry.receiver).first
-   
     respond_to do |format|
       if @guestbookentry.update_attributes(params[:guestbookentry])
         format.html { redirect_to '/profiles?email='+@lastProfile.email , notice: 'Guestbookentry was successfully updated.' }
