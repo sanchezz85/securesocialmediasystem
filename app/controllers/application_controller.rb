@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
     if session[:user_email] || session[:remote_user_email]
       return true
     end
+    logger.info("sessions doesn't exist! -> Login")
     flash[:warning]='Please login to continue'
     session[:return_to]=request.fullpath
     redirect_to log_in_path

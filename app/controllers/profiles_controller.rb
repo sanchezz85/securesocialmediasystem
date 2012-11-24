@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   
-  #before_filter :login_required
+  before_filter :login_required
   
   # GET /profiles
   # GET /profiles.json
@@ -36,7 +36,7 @@ class ProfilesController < ApplicationController
       @profile = current_user.profile
     end  
     if @profile
-      @profileowner = User.find(@profile.user_id)
+      @profileowner = User.find_by_email(@profile.email)
     else
       @profileowner = current_user 
     end 
@@ -51,7 +51,6 @@ class ProfilesController < ApplicationController
   # GET /profiles/new.json
   def new
     @profile = Profile.new
-
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @profile }
