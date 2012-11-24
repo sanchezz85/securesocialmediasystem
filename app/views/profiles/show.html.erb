@@ -115,12 +115,14 @@
     <td><%= entry.sender %></td>
     <td><%= entry.content %></td>
     <td><%= entry.created_at %></td>
-    <%if @profile.user_id == current_user.id %>
-    	<td><%= link_to 'Delete', delete_guestbookentry_path(entry), confirm: 'Are you sure?', method: :delete %></td>
-   	<%else%>
-   		<td></td>
-   	<%end%>
-  </tr>
+    <% if current_user%>
+    	<%if @profile.user_id == current_user.id %>
+    		<td><%= link_to 'Delete', delete_guestbookentry_path(entry), confirm: 'Are you sure?', method: :delete %></td>
+   		<%else%>
+   			<td></td>
+   		<%end%>
+   		</tr>
+   <%end%>
 <% end %>
 </table>
 
