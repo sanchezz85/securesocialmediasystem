@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   
   protected
   def login_required
-    if session[:user_email] 
+    if session[:user_email] || session[:remote_user_email] 
       return true
     end
     logger.info("sessions doesn't exist! -> Login")
