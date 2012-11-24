@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   
-  before_filter :login_required
+  #before_filter :login_required
   
   # GET /profiles
   # GET /profiles.json
@@ -25,8 +25,8 @@ class ProfilesController < ApplicationController
         response = post_to_remote_url(remote_url,current_user)
         logger.info("user sent to session#remote_create with result: " + response)
         #redirect to remote profile
-        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]       
-          
+        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]
+        return           
       else
         logger.info("No need for session remote_create! Profile is going to be loaded from local db")
         @profile = Profile.where("email =?", params[:email] ).first
@@ -34,16 +34,13 @@ class ProfilesController < ApplicationController
     else
       logger.info("Loading current_user's profile")
       @profile = current_user.profile
-    end
-      
+    end  
     if @profile
       @profileowner = User.find(@profile.user_id)
     else
       @profileowner = current_user 
-    end
-    
+    end 
     @guestbookentries = Guestbookentry.where("receiver= ?", @profileowner.email).order("created_at DESC")
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @profile }

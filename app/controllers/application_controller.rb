@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   
   protected
   def login_required
-    if session[:user_email] || session[:remote_user] 
+    if session[:user_email] 
       return true
     end
     flash[:warning]='Please login to continue'

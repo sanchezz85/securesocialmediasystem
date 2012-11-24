@@ -26,8 +26,8 @@ class SessionsController < ApplicationController
     @remote_user = User.new
     @remote_user.email = parsed_json["email"]
     @remote_user.homeserver= parsed_json["homeserver"]
-    session[:remote_user] = @remote_user
-    if session[:remote_user]
+    session[:user_email] = @remote_user
+    if session[:user_email]
       logger.info("remote_create: session created:" + parsed_json.to_s)
       render json: '{"remote_create status":"successful"}'
     else
@@ -36,7 +36,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    session[:user_id] = nil
+    session[:user_email] = nil
     redirect_to root_url, :notice => "Logged out!"
   end
 end
