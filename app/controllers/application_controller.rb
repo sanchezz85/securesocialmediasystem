@@ -4,12 +4,25 @@ class ApplicationController < ActionController::Base
   #work around for csrf-problem with json
   skip_before_filter :verify_authenticity_token
   
+  before_filter :login_required
+  
   helper_method :current_user
 
   #Get the current user (logged in)
   private
   def current_user
-    @current_user ||= User.find(session[:user_id]) if session[:user_id]
+    @current_user ||= User.find_by_email(session[:user_email]) if session[:user_email]
+  end
+  
+  protected
+  def login_required
+    if session[:user_email]
+      return true
+    end
+    flash[:warning]='Please login to continue'
+    session[:return_to]=request.fullpath
+    redirect_to log_in_path
+    return false 
   end
   
   #Get the home-server ip for registration/login
