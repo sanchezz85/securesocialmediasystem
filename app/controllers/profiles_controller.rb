@@ -25,6 +25,7 @@ class ProfilesController < ApplicationController
         response = post_to_remote_url(remote_url,current_user)
         logger.info("user sent to session#remote_create with result: " + response)
         #redirect to remote profile
+        #hier muss der fehler sein!!!
         redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]
         return           
       else
