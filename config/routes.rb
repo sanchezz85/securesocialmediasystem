@@ -35,9 +35,14 @@ SecureSocialMediaSystem::Application.routes.draw do
   root :to => "home#index"
   
   get "users/index" => "users#index"
-  
   resources :users
+  
+  
+  post "sessions/remotecreate" => "sessions#remote_create"
   resources :sessions
+  
+  
+  
   resources :home
 
 

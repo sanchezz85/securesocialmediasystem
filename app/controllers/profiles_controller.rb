@@ -18,16 +18,21 @@ class ProfilesController < ApplicationController
   def show
     if params[:email]
       #@profile = Profile.find(params[:id])
-      if is_remote_user?(params[:email])
-        
-        
-        #************ToDO: Weiterleitung zu remote server profile**************!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        
-        
+      if is_remote_user?(params[:email]) # profile at remote server?
+        logger.info("remote_create for session is required!")
+        #remote session creation for current user
+        remote_url = "http://" + parse_homeserver(params[:email]) + ":3000/sessions/remotecreate"
+        response = post_to_remote_url(remote_url,current_user)
+        logger.info("user sent to session#remote_create with result: " + response)
+        #redirect to remote profile
+        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]       
+          
       else
+        logger.info("No need for session remote_create! Profile is going to be loaded from local db")
         @profile = Profile.where("email =?", params[:email] ).first
       end
     else
+      logger.info("Loading current_user's profile")
       @profile = current_user.profile
     end
       

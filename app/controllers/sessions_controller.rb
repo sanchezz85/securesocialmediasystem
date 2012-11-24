@@ -23,15 +23,12 @@ class SessionsController < ApplicationController
   def remote_create
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
-    @message = Message.new
-    @message.receiver = parsed_json["receiver"]
-    @message.sender= parsed_json["sender"]
-    @message.content = parsed_json["content"]
-    @message.subject = parsed_json["subject"]
-    @message.read = parsed_json["read"]
-    @message.created_at = parsed_json["created_at"]
-    if @message.save
-      logger.info("remote_create: message added:" + parsed_json.to_s)
+    @remote_user = User.new
+    @remote_user.email = parsed_json["email"]
+    @remote_user.homeserver= parsed_json["homeserver"]
+    session[:remote_user] = @remote_user
+    if session[:remote_user]
+      logger.info("remote_create: session created:" + parsed_json.to_s)
       render json: '{"remote_create status":"successful"}'
     else
       render json: '{"remote_create status":"failure"}'
