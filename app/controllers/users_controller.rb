@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   
-  skip_before_filter :login_required
-  
+before_filter :login_required, except: [:index, :create, :new]
+
   def index
     @users = User.all
     respond_to do |format|

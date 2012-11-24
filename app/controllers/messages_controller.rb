@@ -1,5 +1,7 @@
 class MessagesController < ApplicationController
   
+  before_filter :login_required, except: [:remote_create, :remote_destroy]
+  
   # GET /messages
   # GET /messages.json
   def index

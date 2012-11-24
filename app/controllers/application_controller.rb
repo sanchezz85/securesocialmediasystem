@@ -4,8 +4,6 @@ class ApplicationController < ActionController::Base
   #work around for csrf-problem with json
   skip_before_filter :verify_authenticity_token
   
-  before_filter :login_required
-  
   helper_method :current_user
 
   #Get the current user (logged in)

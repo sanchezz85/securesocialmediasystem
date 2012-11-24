@@ -1,4 +1,7 @@
 class FriendlistentriesController < ApplicationController
+  
+  before_filter :login_required, except: [:remote_create, :remote_destroy, :remote_confirm]
+  
   # GET /friendlistentries
   # GET /friendlistentries.json
   def index

@@ -1,4 +1,7 @@
 class GuestbookentriesController < ApplicationController
+  
+  before_filter :login_required
+  
   # GET /guestbookentries
   # GET /guestbookentries.json
   def index
