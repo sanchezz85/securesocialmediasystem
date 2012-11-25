@@ -30,11 +30,11 @@ class SessionsController < ApplicationController
       logger.info("session#remote_create: session already exists!")
     else
       session[:remote_user_email] = @remote_user.email
-      logger.info("session#remote_create: new session created!")
+      logger.info("session#remote_create: new session created! Session ID:" + request.session_options[:id])
     end
     if session[:remote_user_email]
       logger.info("remote_create: session created:" + parsed_json.to_s)
-      render json: '{"remote_create status":"successful"}'
+      render json: (j.encode(request.session_options[:id]))
     else
       render json: '{"remote_create status":"failure"}'
     end    

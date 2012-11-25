@@ -24,9 +24,12 @@ class ProfilesController < ApplicationController
         remote_url = "http://" + parse_homeserver(params[:email]) + ":3000/sessions/remotecreate"
         response = post_to_remote_url(remote_url,current_user)
         logger.info("user sent to session#remote_create with result: " + response)
-        #redirect to remote profile
-        #hier muss der fehler sein!!!
-        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]
+        
+        #************redirect to remote profile************ToDo****************
+        stringlist = response.split('"')
+        @session_id = stringlist[3]
+        #ToDo: session_id aus vorherigem post mit diesem redirect verknüpfen, da dieser redirect eine neue session id erhält und somit nicht eingeloggt ist!
+        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email], :session_id => @session_id
         return           
       else
         logger.info("No need for session remote_create! Profile is going to be loaded from local db")
