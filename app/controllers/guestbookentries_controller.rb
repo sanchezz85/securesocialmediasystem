@@ -31,9 +31,12 @@ class GuestbookentriesController < ApplicationController
     @guestbookentry.receiver = @guestbookowner.email
     if current_user
       @guestbookentry.sender = current_user.email
+      logger.info("in guestbookentries#new current_user:" + current_user)
     else
       @guestbookentry.sender = remote_user
+      logger.info("in guestbookentries#new remote_user:")
     end
+    logger.info("guestbookentry.sender = " + @guestbookentry.sender)
     @guestbookentry.save
     respond_to do |format|
       format.html # new.html.erb
@@ -43,7 +46,15 @@ class GuestbookentriesController < ApplicationController
 
   # GET /guestbookentries/1/edit
   def edit
+    logger.info("in guestbookentries#edit:")
     @guestbookentry = Guestbookentry.find(params[:id])
+    if current_user
+      logger.info("in guestbookentries#edit current_user:")
+      @guestbookentry.sender = current_user.email
+    else
+      @guestbookentry.sender = remote_user
+      logger.info("in guestbookentries#edit remote_user:")
+    end
   end
 
   # POST /guestbookentries
@@ -64,8 +75,16 @@ class GuestbookentriesController < ApplicationController
   # PUT /guestbookentries/1
   # PUT /guestbookentries/1.json
   def update
+    logger.info("in guestbookentries#update:")
     @guestbookentry = Guestbookentry.find(params[:id])
     @guestbookentryowner = User.find_by_email(@guestbookentry.receiver)
+    if current_user
+      logger.info("in guestbookentries#update current_user:")
+      @guestbookentry.sender = current_user.email
+    else
+      @guestbookentry.sender = remote_user
+       logger.info("in guestbookentries#update remote_user:")
+    end
     @guestbookentryowner.guestbookentries<<@guestbookentry
     @lastProfile = Profile.where("email =?",@guestbookentry.receiver).first
     respond_to do |format|

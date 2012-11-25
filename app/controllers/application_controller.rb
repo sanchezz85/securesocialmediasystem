@@ -21,9 +21,19 @@ class ApplicationController < ActionController::Base
   def login_required
     #if (remote)request has param sessionid, map the corresponding session to this request
     if params[:sessionid] and params[:email]
-       request.session_options[:id] =  params[:sessionid]
-       session[:remote_user_email] = params[:email]
-       logger.info("Session id forwared:" + request.session_options[:id])
+      #loading remote_user_email from session
+      loaded_session = Session.find_by_session_id(params[:sessionid])
+      data = Marshal.load(ActiveSupport::Base64.decode64(loaded_session.data))
+      remote_user_email = data["remote_user_email"]
+      session[:remote_user_email] = remote_user_email
+      request.session_options[:id] =  params[:sessionid]
+      logger.info("Session id forwared:" + request.session_options[:id])
+      if session[:remote_user_email]
+        logger.info("remoter_user_email already exists!: " + session[:remote_user_email])
+      else
+        session[:remote_user_email] = params[:email]
+        logger.info("remoter_user_email created!: " + session[:remote_user_email])
+      end
     end
     
     if session[:user_email] || session[:remote_user_email] 
