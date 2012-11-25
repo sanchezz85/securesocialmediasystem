@@ -7,6 +7,10 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+	
+<div class="globalBorder">
+
+<%= image_tag("SSMS-Logo_small.png", :align => "right") %>
 
 <div id="user_nav">
   <% if current_user %>
@@ -24,7 +28,20 @@
   <%= content_tag :div, msg, :id => "flash_#{name}" %>
 <% end %>
 
+<% if current_user && @profile %>
+	<% if @profile.email == current_user.email %>
+		<%= menuArea(@profile, true) %>
+	<% else %>
+		<%= menuArea(@profile, false) %>
+	<% end %>
+<% end %>
+
+<div class="contentArea">
 <%= yield %>
+</div>
+
+<div style="clear:both;"></div>
+</div>
 
 </body>
 </html>
