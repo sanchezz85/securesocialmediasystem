@@ -30,7 +30,7 @@ class ProfilesController < ApplicationController
         stringlist = response.split('"')
         @session_id = stringlist[3]
         #ToDo: session_id aus vorherigem post mit diesem redirect verknüpfen, da dieser redirect eine neue session id erhält und somit nicht eingeloggt ist!
-        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]+"/?sessionid="+@session_id
+        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]+"&sessionid="+@session_id
         return           
       else
         logger.info("No need for session remote_create! Profile is going to be loaded from local db")
