@@ -19,10 +19,10 @@ class ApplicationController < ActionController::Base
   
   protected
   def login_required
-    
-    #if request has param sessionid, map the corresponding session to this request
-    if params[:sessionid]
+    #if (remote)request has param sessionid, map the corresponding session to this request
+    if params[:sessionid] and params[:email]
        request.session_options[:id] =  params[:sessionid]
+       session[:remote_user_email] = params[:email]
        logger.info("Session id forwared:" + request.session_options[:id])
     end
     
