@@ -34,7 +34,7 @@ class SessionsController < ApplicationController
     end
     if session[:remote_user_email]
       logger.info("remote_create: session created:" + parsed_json.to_s)
-      render json: (j.encode(request.session_options[:id]))
+      render json: '{"session_id":"' + request.session_options[:id]+'"}'
     else
       render json: '{"remote_create status":"failure"}'
     end    

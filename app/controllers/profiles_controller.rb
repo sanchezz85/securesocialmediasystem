@@ -17,9 +17,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/1.json
   def show
     if params[:email]
-      
- 
-      
+       
       #@profile = Profile.find(params[:id])
       if is_remote_user?(params[:email]) # profile at remote server?
         logger.info("remote_create for session is required!")
