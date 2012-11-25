@@ -19,6 +19,12 @@ class ApplicationController < ActionController::Base
   
   protected
   def login_required
+    
+    #test
+    if params[:sessionid]
+       request.session_options[:id] =  params[:sessionid]
+    end
+    
     if session[:user_email] || session[:remote_user_email] 
       return true
     end
