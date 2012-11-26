@@ -5,6 +5,7 @@ class FriendlistentriesController < ApplicationController
   # GET /friendlistentries
   # GET /friendlistentries.json
   def index
+    init_displayed_user(current_user.id)
     @friends = Friendlistentry.where("(user_id =? OR friend =?)AND confirmation =?",current_user.id,current_user.email, true)
     @outgoingrequests = Friendlistentry.where("user_id =? AND confirmation =?",current_user.id, false)
     @incomingrequests = Friendlistentry.where("friend =? AND confirmation =?",current_user.email, false)
@@ -13,6 +14,7 @@ class FriendlistentriesController < ApplicationController
   # GET /friendlistentries/new
   # GET /friendlistentries/new.json
   def new
+    init_displayed_user(current_user.id)
     @friendlistentry = Friendlistentry.new
     #@users = get_all_user
     @users = get_all_user
@@ -30,6 +32,7 @@ class FriendlistentriesController < ApplicationController
   # POST /friendlistentries
   # POST /friendlistentries.json
   def create
+    init_displayed_user(current_user.id)
     @friendlistentry = Friendlistentry.new(params[:friendlistentry])
     @friendlistentry.confirmation = false
     @friendlistentry.owner = current_user.email
@@ -45,7 +48,7 @@ class FriendlistentriesController < ApplicationController
           if is_remote_user?(@friendlistentry.friend)
             logger.info("remote_create for friendlistentry is required!")
             #remote friendlistentry creation
-            remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remotecreate"
+            remote_url = create_server_url(parse_homeserver(@friendlistentry.friend)) + "/friendlistentries/remotecreate"
             response = post_to_remote_url(remote_url,@friendlistentry)
             logger.info("friendlistentry sent to remote_create with Result: " + response)
             redirect_to action: "index"
@@ -81,18 +84,19 @@ class FriendlistentriesController < ApplicationController
   # DELETE /friendlistentries/1
   # DELETE /friendlistentries/1.json
   def destroy
+    init_displayed_user(current_user.id)
     @friendlistentry = Friendlistentry.find(params[:id])
     if @friendlistentry.destroy
       logger.info("friendlistentries#destroy:  friendlistentry destroyed!")
       if is_remote_user?(@friendlistentry.owner)
         logger.info("remote_destroy is required!")
-        remote_url = "http://" + parse_homeserver(@friendlistentry.owner) + ":3000/friendlistentries/remotedestroy"
+        remote_url = create_server_url(parse_homeserver(@friendlistentry.owner)) + "/friendlistentries/remotedestroy"
         response = post_to_remote_url(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
       end      
       if is_remote_user?(@friendlistentry.friend)
         logger.info("remote_destroy is required!")
-        remote_url = "http://" + parse_homeserver(@friendlistentry.friend) + ":3000/friendlistentries/remotedestroy"
+        remote_url = create_server_url(parse_homeserver(@friendlistentry.friend)) + "/friendlistentries/remotedestroy"
         response = post_to_remote_url(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_destroy with Result: " + response)    
       end        
@@ -117,6 +121,7 @@ class FriendlistentriesController < ApplicationController
   
   # Get confirmrequest/1
   def confirmrequest
+    init_displayed_user(current_user.id)
     @friendlistentry = Friendlistentry.find(params[:id])
     @friendlistentry.confirmation = true
     if @friendlistentry.save
@@ -124,7 +129,7 @@ class FriendlistentriesController < ApplicationController
       #check wheter friend is located on a remote server
       if is_remote_user?(@friendlistentry.owner) # Owner not friend!
         logger.info("remote_confirmrequest is required!")
-        remote_url = "http://" + parse_homeserver(@friendlistentry.owner) + ":3000/friendlistentries/remoteconfirm"
+        remote_url = create_server_url(parse_homeserver(@friendlistentry.owner)) + "/friendlistentries/remoteconfirm"
         response = post_to_remote_url(remote_url,@friendlistentry)
         logger.info("friendlistentry sent to remote_confirm with Result: " + response)   
       end

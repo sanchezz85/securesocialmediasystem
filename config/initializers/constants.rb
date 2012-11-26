@@ -1,0 +1,3 @@
+# Constants
+REMOTE_SERVER_LINK_PREFIX = 'http://'
+REMOTE_SERVER_LINK_PORT = ':3000'

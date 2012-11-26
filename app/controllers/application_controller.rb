@@ -5,11 +5,27 @@ class ApplicationController < ActionController::Base
   skip_before_filter :verify_authenticity_token
   
   helper_method :current_user
+  helper_method :create_server_url
 
   #Get the current user (logged in)
   private
   def current_user
     @current_user ||= User.find_by_email(session[:user_email]) if session[:user_email]
+  end
+  
+  #Create propper url to remote server
+  def create_server_url(ip)
+    return REMOTE_SERVER_LINK_PREFIX + ip + REMOTE_SERVER_LINK_PORT
+  end
+  
+  protected
+  def init_displayed_user(id)
+    if id then
+      profile = Profile.find(id) if id
+      @displayed_user ||= User.find_by_email(profile.email) if id
+    else
+      @displayed_user = nil
+    end
   end
   
   protected
@@ -78,7 +94,7 @@ class ApplicationController < ActionController::Base
       @nodes.each do |node|
         if !node.eql?(local_ip)
           response = connection.get do |req|
-            req.url "http://" + node + ":3000/users/index"
+            req.url create_server_url(node) + "/users/index"
             req.headers['Content-Type'] = 'application/json'
           end
           parsed_json = j.decode(response.body)

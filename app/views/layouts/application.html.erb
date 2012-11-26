@@ -12,12 +12,12 @@
 
 <%= image_tag("SSMS-Logo_small.png", :align => "right") %>
 
-<div id="user_nav">
+<div id="user_nav" class="header">
   <% if current_user %>
     Logged in as <%= current_user.email %>.
     <%= link_to "Log out", log_out_path %>
     <br />
-    <%= link_to "To your profile", my_profile_path%>
+    <!-- <%= link_to "To your profile", my_profile_path%> -->
   <% else %>
     <%= link_to "Sign up", sign_up_path %> or
     <%= link_to "log in", log_in_path %>
@@ -27,18 +27,16 @@
   	<%= link_to "Back to Your Profile!", "http://192.168.1.78:3000/profiles" %>
   <% end %>
   
-  
+  <% flash.each do |name, msg| %>
+    <%= content_tag :div, msg, :id => "flash_#{name}" %>
+  <% end %>
 </div>
 
-<% flash.each do |name, msg| %>
-  <%= content_tag :div, msg, :id => "flash_#{name}" %>
-<% end %>
-
-<% if current_user && @profile %>
-	<% if @profile.email == current_user.email %>
-		<%= menuArea(@profile, true) %>
+<% if current_user && @displayed_user %> 
+	<% if @displayed_user.email == current_user.email %>
+		<%= menuArea(@displayed_user.email, true) %>
 	<% else %>
-		<%= menuArea(@profile, false) %>
+		<%= menuArea(@displayed_user.email, false) %>
 	<% end %>
 <% end %>
 

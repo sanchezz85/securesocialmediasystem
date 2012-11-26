@@ -45,6 +45,11 @@ a:hover {
 	text-decoration: none;
 }
 
+.header {
+	height:40px;
+	border-style: transparent;
+}
+
 .menuArea {
 	width: 200px;
 	padding: 5px;
@@ -67,6 +72,20 @@ img.profilepic {
 .menu {
 	width: 150px;
 	background-color: #b3ffa6;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #009f00;
+}
+
+div.collapsable_initOpen {
+	display: block;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #009f00;
+}
+
+div.collapsable_initClosed {
+	display: none;
 	border-width: 1px;
 	border-style: solid;
 	border-color: #009f00;

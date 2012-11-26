@@ -13,3 +13,14 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+function toggleCollapsableDiv(divId) {
+	var elem = document.getElementById(divId);
+	if (elem.style.display == "block") {
+		elem.style.display = "none";
+	}
+	else
+	{
+		elem.style.display = "block";
+	}
+}

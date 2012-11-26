@@ -1,99 +1,86 @@
-<p id="notice"><%= notice %></p>
-
-<br/>
-<br/>
+<!-- <p id="notice"><%= notice %></p> -->
 
 <% if current_user %>
 	<%if @profile.email == current_user.email %>
 		<b><%= link_to 'Edit your profile', profile_edit_path %></b>
-		<b><%= link_to 'Private Messaging', messages_overview_path %></b>
-		<b><%= link_to 'Friends', friends_path %></b>
+		<br/>
+		<br/>
 	<% end %> 
 <% end %> 
 
+<h1><%= @profile.email %>'s Home</h1>
 
-<br/>
-<br/>
-<br/>
+<% if @profile.gender != "" then %>
+	<% if @profile.gender = 'male' then %>
+		Mr 
+	<% else %>
+		Ms 
+	<% end %>
+<% end %>
+<% if (@profile.firstname != "") || (@profile.lastname != "") then %>
+	<%= @profile.firstname %>
+	<%= @profile.lastname %>
+<% end %>
+<br /><br />
 
-<p><b>
-  <%= @profile.email %>
-</b></p>
+<% if @profile.birthdate != "" then %>
+<a href="javascript:toggleCollapsableDiv('BirthdayArea');" title="Click to collapse">Birthday</a>
+<div id="BirthdayArea" class="collapsable_initClosed">
+	<%= @profile.birthdate %>
+</div>
+<br />
+<% end %>
 
+<% if (@profile.phonenumber != "") || (@profile.street != "") || (@profile.city != "")  then %>
+<a href="javascript:toggleCollapsableDiv('ContactArea');" title="Click to collapse">Contact Information</a>
+<div id="ContactArea" class="collapsable_initClosed">
+	<% if @profile.phonenumber != "" then %>
+		Phone number: <%= @profile.phonenumber %>
+		<br /><br />
+	<% end %>
+	<% if (@profile.street != "") || (@profile.city != "") %>
+		Address:<br />
+		<%= @profile.street %>
+		<%= @profile.number %>
+		<br />
+		<%= @profile.postalcode %>
+		<%= @profile.city %>
+	<% end %>
+</div>
+<br />
+<% end %>
 
-<p>
-  <%= image_tag @profile.photo.url(:small) %>
-</p>
+<% if @profile.hobbies != "" then %>
+<a href="javascript:toggleCollapsableDiv('HobbyArea');" title="Click to collapse">Hobbies</a>
+<div id="HobbyArea" class="collapsable_initClosed">
+	<%= @profile.hobbies %>
+</div>
+<br />
+<% end %>
 
-<p>
-  <b>Lastname:</b>
-  <%= @profile.lastname %>
-</p>
+<% if @profile.sports != "" then %>
+<a href="javascript:toggleCollapsableDiv('SportsArea');" title="Click to collapse">Sports</a>
+<div id="SportsArea" class="collapsable_initClosed">
+	<%= @profile.sports %>
+</div>
+<br />
+<% end %>
 
-<p>
-  <b>Firstname:</b>
-  <%= @profile.firstname %>
-</p>
+<% if @profile.jobs != "" then %>
+<a href="javascript:toggleCollapsableDiv('JobArea');" title="Click to collapse">Jobs</a>
+<div id="JobArea" class="collapsable_initClosed">
+	<%= @profile.jobs %>
+</div>
+<br />
+<% end %>
 
-<p>
-  <b>Birthdate:</b>
-  <%= @profile.birthdate %>
-</p>
-
-<p>
-  <b>Phonenumber:</b>
-  <%= @profile.phonenumber %>
-</p>
-
-<p>
-  <b>Street:</b>
-  <%= @profile.street %>
-</p>
-
-<p>
-  <b>Number:</b>
-  <%= @profile.number %>
-</p>
-
-<p>
-  <b>Postalcode:</b>
-  <%= @profile.postalcode %>
-</p>
-
-<p>
-  <b>City:</b>
-  <%= @profile.city %>
-</p>
-
-<p>
-  <b>Gender:</b>
-  <%= @profile.gender %>
-</p>
-
-<p>
-  <b>Hobbies:</b>
-  <%= @profile.hobbies %>
-</p>
-
-<p>
-  <b>Jobs:</b>
-  <%= @profile.jobs %>
-</p>
-
-<p>
-  <b>Sports:</b>
-  <%= @profile.sports %>
-</p>
-
-<p>
-  <b>Education:</b>
-  <%= @profile.education %>
-</p>
-
-
-
-<!--|
-<%= link_to 'Back', profiles_path %>-->
+<% if @profile.education != "" then %>
+<a href="javascript:toggleCollapsableDiv('EducationArea');" title="Click to collapse">Education</a>
+<div id="EducationArea" class="collapsable_initClosed">
+	<%= @profile.education %>
+</div>
+<br />
+<% end %>
 
 <br/>
 <br/>

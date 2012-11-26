@@ -16,6 +16,10 @@ class GuestbookentriesController < ApplicationController
   # GET /guestbookentries/1.json
   def show
     @guestbookentry = Guestbookentry.find(params[:id])
+    
+    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
+    #init_displayed_user(guestbookowner.id)
+    
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @guestbookentry }
@@ -31,7 +35,7 @@ class GuestbookentriesController < ApplicationController
     @guestbookentry.receiver = @guestbookowner.email
     if current_user
       @guestbookentry.sender = current_user.email
-      logger.info("in guestbookentries#new current_user:" + current_user)
+      #logger.info("in guestbookentries#new current_user:" + current_user)
     else
       @guestbookentry.sender = remote_user
       logger.info("in guestbookentries#new remote_user:")
@@ -48,6 +52,10 @@ class GuestbookentriesController < ApplicationController
   def edit
     logger.info("in guestbookentries#edit:")
     @guestbookentry = Guestbookentry.find(params[:id])
+    
+    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
+    #init_displayed_user(guestbookowner.id)
+    
     if current_user
       logger.info("in guestbookentries#edit current_user:")
       @guestbookentry.sender = current_user.email
@@ -61,6 +69,10 @@ class GuestbookentriesController < ApplicationController
   # POST /guestbookentries.json
   def create
     @guestbookentry = Guestbookentry.new(params[:guestbookentry])
+    
+    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
+    #init_displayed_user(guestbookowner.id)
+    
     respond_to do |format|
       if @guestbookentry.save
         format.html { redirect_to @guestbookentry, notice: 'Guestbookentry was successfully created.' }
@@ -78,6 +90,7 @@ class GuestbookentriesController < ApplicationController
     logger.info("in guestbookentries#update:")
     @guestbookentry = Guestbookentry.find(params[:id])
     @guestbookentryowner = User.find_by_email(@guestbookentry.receiver)
+    #init_displayed_user(guestbookowner.id)
     if current_user
       logger.info("in guestbookentries#update current_user:")
       @guestbookentry.sender = current_user.email
@@ -102,6 +115,10 @@ class GuestbookentriesController < ApplicationController
   # DELETE /guestbookentries/1.json
   def destroy
     @guestbookentry = Guestbookentry.find(params[:id])
+    
+    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
+    #init_displayed_user(guestbookowner.id)
+    
     @guestbookentry.destroy
     redirect_to my_profile_path
     

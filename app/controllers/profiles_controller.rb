@@ -17,12 +17,11 @@ class ProfilesController < ApplicationController
   # GET /profiles/1.json
   def show
     if params[:email]
-       
       #@profile = Profile.find(params[:id])
       if is_remote_user?(params[:email]) # profile at remote server?
         logger.info("remote_create for session is required!")
         #remote session creation for current user
-        remote_url = "http://" + parse_homeserver(params[:email]) + ":3000/sessions/remotecreate"
+        remote_url = create_server_url(parse_homeserver(params[:email])) + "/sessions/remotecreate"
         response = post_to_remote_url(remote_url,current_user)
         logger.info("user sent to session#remote_create with result: " + response)
         
@@ -30,7 +29,7 @@ class ProfilesController < ApplicationController
         stringlist = response.split('"')
         @session_id = stringlist[3]
         #ToDo: session_id aus vorherigem post mit diesem redirect verknüpfen, da dieser redirect eine neue session id erhält und somit nicht eingeloggt ist!
-        redirect_to "http://"+parse_homeserver(params[:email])+":3000/profiles/?email="+params[:email]+"&sessionid="+@session_id
+        redirect_to create_server_url(parse_homeserver(params[:email])) + "/profiles/?email="+params[:email]+"&sessionid="+@session_id
         return           
       else
         logger.info("No need for session remote_create! Profile is going to be loaded from local db")
@@ -44,7 +43,8 @@ class ProfilesController < ApplicationController
       @profileowner = User.find_by_email(@profile.email)
     else
       @profileowner = current_user 
-    end 
+    end
+    init_displayed_user(@profileowner.id)
     @guestbookentries = Guestbookentry.where("receiver= ?", @profileowner.email).order("created_at DESC")
     respond_to do |format|
       format.html # show.html.erb
@@ -55,6 +55,7 @@ class ProfilesController < ApplicationController
   # GET /profiles/new
   # GET /profiles/new.json
   def new
+    init_displayed_user(current_user.id)
     @profile = Profile.new
     respond_to do |format|
       format.html # new.html.erb
@@ -64,12 +65,14 @@ class ProfilesController < ApplicationController
 
   # GET /profiles/1/edit
   def edit
+    init_displayed_user(current_user.id)
     @profile = current_user.profile
   end
 
   # POST /profiles
   # POST /profiles.json
   def create
+    init_displayed_user(current_user.id)
     @profile = Profile.new(params[:profile])
     current_user.profile  = @profile
     @profile.email = current_user.email
@@ -88,6 +91,7 @@ class ProfilesController < ApplicationController
   # PUT /profiles/1
   # PUT /profiles/1.json
   def update
+    init_displayed_user(current_user.id)
     @profile = current_user.profile
 
     respond_to do |format|
@@ -104,6 +108,7 @@ class ProfilesController < ApplicationController
   # DELETE /profiles/1
   # DELETE /profiles/1.json
   def destroy
+    init_displayed_user(current_user.id)
     @profile = Profile.find(params[:id])
     @profile.destroy
 
