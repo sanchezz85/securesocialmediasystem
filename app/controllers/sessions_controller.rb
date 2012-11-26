@@ -31,6 +31,8 @@ class SessionsController < ApplicationController
     else
       session[:remote_user_email] = @remote_user.email
       logger.info("session#remote_create: new session created! Session ID:" + request.session_options[:id])
+      logger.info("session#remote_create: session[remote_user_email created]:" + session[:remote_user_email])
+      logger.info("remote_user.email: " + @remote_user.email)
     end
     if session[:remote_user_email]
       logger.info("remote_create: session created:" + parsed_json.to_s)
