@@ -29,14 +29,16 @@ module ApplicationHelper
             concat tag("br")
             concat link_to('Your friends', friends_path) 
             concat tag("br")
+            concat tag("br")
+            concat link_to('Edit your profile', profile_edit_path)
           else
             concat link_to('View home', "profile/" + email)
             concat tag("br")
             concat link_to('Send private message', messages_overview_path)
             concat tag("br")
-            concat link_to('View friends', friends_path) 
-            concat tag("br")
+            concat link_to('View friends', friends_path)
           end
+          concat tag("br")
         end)
       end)
       concat tag("br")
@@ -44,10 +46,9 @@ module ApplicationHelper
         concat(content_tag(:center) do
           concat(content_tag(:div, :class => "menu") do
             if session[:remote_user_email] then
-              home = create_server_url(parse_homeserver(session[:remote_user_email]))
-              concat link_to('Back to your Home', home + "/profiles")
+              concat link_to('Back to your Home', 'profiles?email=' + session[:remote_user_email])
             else
-              concat link_to('Back to your Home', my_profile_path)
+              concat link_to('Back to your Home', 'profiles?email=' + current_user.email)
             end
           end)
         end)
