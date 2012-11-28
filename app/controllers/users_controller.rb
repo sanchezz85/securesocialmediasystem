@@ -14,6 +14,9 @@ before_filter :login_required, except: [:index, :create, :new]
     @user = User.new
   end
   
+  #ToDo: - Passwortlogik rausnehmen
+  # =>   Registrierung am Zentralserver aufrufen (password muss zuvor base64 kodiert sein!)
+  # =>   Wenn Registrierung am Zentralserver + @user.save erfolgreich, dann "show qr-code" (controller action + view erstellen)
   def create
   @user = User.new(params[:user])
   @user.email = @user.email + "@" + local_ip

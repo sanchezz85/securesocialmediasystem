@@ -3,8 +3,10 @@ class SessionsController < ApplicationController
   def new
   end
   
+  #ToDo: Authentifizierung gegenüber Zentralserver (Feld für google pin hinzufügen)
+  #  Wenn erfolgreich, User + SSMS_Token in Session speichern
   def create
-    user = User.authenticate(params[:email]+"@"+local_ip, params[:password])
+    user = User.authenticate(params[:email]+"@"+local_ip, params[:password]) # entfernen
     if user
       session[:user_email] = user.email
       if session[:return_to] #in case there was a request before log_in, return to the requested url

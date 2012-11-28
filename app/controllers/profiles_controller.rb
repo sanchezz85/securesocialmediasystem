@@ -24,11 +24,8 @@ class ProfilesController < ApplicationController
         remote_url = create_server_url(parse_homeserver(params[:email])) + "/sessions/remotecreate"
         response = post_to_remote_url(remote_url,current_user)
         logger.info("user sent to session#remote_create with result: " + response)
-        
-        #************redirect to remote profile************ToDo****************
         stringlist = response.split('"')
         @session_id = stringlist[3]
-        #ToDo: session_id aus vorherigem post mit diesem redirect verknüpfen, da dieser redirect eine neue session id erhält und somit nicht eingeloggt ist!
         redirect_to create_server_url(parse_homeserver(params[:email])) + "/profiles/?email="+params[:email]+"&sessionid="+@session_id
         return           
       else
