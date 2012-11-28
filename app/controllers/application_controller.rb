@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   def login_required
     #if (remote)request has param sessionid, map the corresponding session to this request
     if params[:sessionid] and params[:email]  
-      #loading remote_user_email from session (created by remote session creation one request ago)
+      #loading remote_user_email from session (created by remote session creation one request agogit )
       loaded_session = Session.find_by_session_id(params[:sessionid])
       data = Marshal.load(ActiveSupport::Base64.decode64(loaded_session.data))
       remote_user_email = data["remote_user_email"]
