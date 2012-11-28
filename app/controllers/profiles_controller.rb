@@ -55,7 +55,8 @@ class ProfilesController < ApplicationController
   # GET /profiles/new
   # GET /profiles/new.json
   def new
-    init_displayed_user(current_user.id)
+    #init_displayed_user(current_user.id)
+    init_displayed_user(nil)
     @profile = Profile.new
     respond_to do |format|
       format.html # new.html.erb
@@ -72,7 +73,8 @@ class ProfilesController < ApplicationController
   # POST /profiles
   # POST /profiles.json
   def create
-    init_displayed_user(current_user.id)
+    #init_displayed_user(current_user.id)
+    init_displayed_user(nil)
     @profile = Profile.new(params[:profile])
     current_user.profile  = @profile
     @profile.email = current_user.email
@@ -108,7 +110,8 @@ class ProfilesController < ApplicationController
   # DELETE /profiles/1
   # DELETE /profiles/1.json
   def destroy
-    init_displayed_user(current_user.id)
+    #init_displayed_user(current_user.id)
+    init_displayed_user(nil)
     @profile = Profile.find(params[:id])
     @profile.destroy
 
