@@ -21,8 +21,9 @@ class ApplicationController < ActionController::Base
   protected
   def init_displayed_user(id)
     if id then
-      profile = Profile.find(id) if id
-      @displayed_user ||= User.find_by_email(profile.email) if id
+      #profile = Profile.find(id)
+      #@displayed_user ||= User.find_by_email(profile.email)
+      @displayed_user = User.find(id)
     else
       @displayed_user = nil
     end
@@ -67,15 +68,16 @@ class ApplicationController < ActionController::Base
   
   #Get the home-server ip for registration/login
   protected
-  require 'socket'
+  #require 'socket'
   def local_ip
-  orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  
-  UDPSocket.open do |s|
-    s.connect '64.233.187.99', 1
-    s.addr.last
-  end
-  ensure
-    Socket.do_not_reverse_lookup = orig
+    return LOCAL_IP
+  #orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  
+  #UDPSocket.open do |s|
+  #  s.connect '64.233.187.99', 1
+  #  s.addr.last
+  #end
+  #ensure
+  #  Socket.do_not_reverse_lookup = orig
   end
   
   #Get all nodes from central services server

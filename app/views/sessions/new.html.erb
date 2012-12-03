@@ -9,5 +9,9 @@
     <%= label_tag :password %><br />
     <%= password_field_tag :password %>
   </p>
+  <p>
+    <%= label_tag :authcode, "Google Authenticator Code:" %><br />
+    <%= password_field_tag :authcode %>
+  </p>
   <p class="button"><%= submit_tag "Log in" %></p>
 <% end %>

@@ -1,0 +1,9 @@
+<p>
+	Please scan this code with your Google Authenticator Smartphone App to allow secure login.
+</p>
+<p>
+	<%= image_tag(flash[:qrcode])%>	
+</p>
+<p>
+	<%= link_to "Finish", log_in_path %>
+</p>

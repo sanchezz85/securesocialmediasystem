@@ -41,6 +41,8 @@ SecureSocialMediaSystem::Application.routes.draw do
   post "sessions/remotecreate" => "sessions#remote_create"
   resources :sessions
   
+  get "pages" => "pages#show"
+  resources :pages
   
   
   resources :home
