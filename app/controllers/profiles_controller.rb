@@ -39,7 +39,7 @@ class ProfilesController < ApplicationController
     if @profile
       @profileowner = User.find_by_email(@profile.email)
     else
-      @profileowner = current_user 
+      @profileowner = current_user
     end
     init_displayed_user(@profileowner.id)
     @guestbookentries = Guestbookentry.where("receiver= ?", @profileowner.email).order("created_at DESC")
@@ -78,7 +78,7 @@ class ProfilesController < ApplicationController
     
     respond_to do |format|
       if @profile.save
-        format.html { redirect_to @profile, notice: 'Profile was successfully created for user: ' + current_user.email }
+        format.html { redirect_to my_profile_path, notice: 'Profile was successfully created for user: ' + current_user.email }
         #format.json { render json: @profile, status: :created, location: @profile }
       else
         format.html { render action: "new" }

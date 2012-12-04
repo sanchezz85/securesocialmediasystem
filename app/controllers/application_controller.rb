@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   def login_required
     #if (remote)request has param sessionid, map the corresponding session to this request
     if params[:sessionid] and params[:email]  
-      #loading remote_user_email from session (created by remote session creation one request agogit )
+      #loading remote_user_email from session (created by remote session creation one request ago )
       loaded_session = Session.find_by_session_id(params[:sessionid])
       data = Marshal.load(ActiveSupport::Base64.decode64(loaded_session.data))
       remote_user_email = data["remote_user_email"]
@@ -47,6 +47,7 @@ class ApplicationController < ActionController::Base
       else
         session[:user_email] = params[:email] 
       end
+      session[:auth_token] = data["auth_token"]
       request.session_options[:id] =  params[:sessionid]
       logger.info("Session id forwared:" + request.session_options[:id])
       if session[:remote_user_email]
@@ -55,12 +56,36 @@ class ApplicationController < ActionController::Base
         session[:remote_user_email] = params[:email]
         logger.info("remoter_user_email created!: " + session[:remote_user_email])
       end
-    end 
-    if session[:user_email] || session[:remote_user_email] 
-      return true
     end
+    
+    # Authorize at central server
+    if session[:user_email] then
+      email = session[:user_email]
+    elsif session[:remote_user_email] then
+      email = session[:remote_user_email]
+    end
+    if email && session[:auth_token] then
+      j = ActiveSupport::JSON
+      # Try authorization by token
+      #json_object = j.encode({})
+      #open faraday connection and post json data to remote url
+      connection = Faraday::Connection.new
+      response = connection.post do |req|
+        req.url  CENTRAL_SERVER_ADDRESS + "/ssms/user/login"
+        req["Content-Type"] = "application/json"
+        req.headers["ssms-token"] = session[:auth_token]
+        req.body = "{}"
+      end
+      if response.status == 204 then
+        # success
+        session[:auth_token] = response.headers["ssms-token"]
+        return true
+      end
+      flash[:whatev] = j.decode(response.body).to_s + " " + session[:auth_token]
+    end
+    
     logger.info("sessions doesn't exist! -> Login")
-    flash[:warning]='Please login to continue'
+    flash[:warning]='You are not logged in or your session timed out. Please login to continue.'
     session[:return_to]=request.fullpath
     redirect_to log_in_path
     return false 
@@ -84,7 +109,22 @@ class ApplicationController < ActionController::Base
   #ToDo: WS-call to receive all nodes
   protected
   def get_all_nodes
-    @nodes = ["192.168.1.77", "192.168.1.78"]
+    if session[:auth_token] then
+      j = ActiveSupport::JSON
+      connection = Faraday::Connection.new
+      response = connection.get do |req|
+        req.url  CENTRAL_SERVER_ADDRESS + "/ssms/node"
+        req["Content-Type"] = "application/json"
+        req.headers["ssms-token"] = session[:auth_token]
+        req.body = "{}"
+      end
+      resp = j.decode(response.body)
+      @nodes = []
+      resp.each do |str|
+        @nodes.append(str["address"])
+      end
+      return @nodes
+    end
   end
   
   #Get all user globally
@@ -139,10 +179,11 @@ class ApplicationController < ActionController::Base
   
   #method for posting a object as json to a remote url
   protected
-  def post_to_remote_url(remote_url,object)
+  def post_to_remote_url(remote_url,user)
     #convert object into json
     j = ActiveSupport::JSON
-    json_object = j.encode(object)
+    package = { "email" => user.email, "auth-token" => session[:auth_token] }
+    json_object = j.encode(package)
     #open faraday connection and post json data to remote url
     connection = Faraday::Connection.new
     response = connection.post do |req|

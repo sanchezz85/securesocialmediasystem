@@ -27,7 +27,7 @@ SecureSocialMediaSystem::Application.routes.draw do
   get "profiles" => "profiles#show", as: "my_profile"
   resources :profiles
 
-  get "home/new"
+  #get "home/new"
 
   get "log_out" => "sessions#destroy", :as => "log_out"
   get "log_in" => "sessions#new", :as => "log_in"
