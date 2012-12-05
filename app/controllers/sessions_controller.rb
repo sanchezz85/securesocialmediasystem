@@ -1,13 +1,16 @@
 class SessionsController < ApplicationController
   
   def new
+    @local_ip = local_ip
   end
   
   #ToDo: Authentifizierung gegenüber Zentralserver (Feld für google pin hinzufügen)
   #  Wenn erfolgreich, User + SSMS_Token in Session speichern
   def create
     #user = User.authenticate(params[:email]+"@"+local_ip, params[:password]) # entfernen
-    
+
+    @local_ip = local_ip
+        
     user = User.find_by_email(params[:email] + "@" + local_ip)
     if !user then
       flash[:error] = "Login failed, user not found on local server. Please only login on your home server."
@@ -43,6 +46,7 @@ class SessionsController < ApplicationController
         return
       end
     else
+      flash[:csm] = j.decode(response.body).to_s
       flash[:error] = "Login failed."
       render "new"
       return

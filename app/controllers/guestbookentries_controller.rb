@@ -17,8 +17,8 @@ class GuestbookentriesController < ApplicationController
   def show
     @guestbookentry = Guestbookentry.find(params[:id])
     
-    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
-    #init_displayed_user(guestbookowner.id)
+    guestbookowner = User.find_by_email(@guestbookentry.receiver)
+    init_displayed_user(guestbookowner.id)
     
     respond_to do |format|
       format.html # show.html.erb
@@ -33,6 +33,7 @@ class GuestbookentriesController < ApplicationController
     @profile = Profile.find(params[:id])
     @guestbookowner = User.find_by_email(@profile.email)
     @guestbookentry.receiver = @guestbookowner.email
+    init_displayed_user(@guestbookowner.id)
     if current_user
       @guestbookentry.sender = current_user.email
       #logger.info("in guestbookentries#new current_user:" + current_user)
@@ -53,8 +54,8 @@ class GuestbookentriesController < ApplicationController
     logger.info("in guestbookentries#edit:")
     @guestbookentry = Guestbookentry.find(params[:id])
     
-    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
-    #init_displayed_user(guestbookowner.id)
+    guestbookowner = User.find_by_email(@guestbookentry.receiver)
+    init_displayed_user(guestbookowner.id)
     
     if current_user
       logger.info("in guestbookentries#edit current_user:")
@@ -90,7 +91,7 @@ class GuestbookentriesController < ApplicationController
     logger.info("in guestbookentries#update:")
     @guestbookentry = Guestbookentry.find(params[:id])
     @guestbookentryowner = User.find_by_email(@guestbookentry.receiver)
-    #init_displayed_user(guestbookowner.id)
+    init_displayed_user(@guestbookowner.id)
     if current_user
       logger.info("in guestbookentries#update current_user:")
       @guestbookentry.sender = current_user.email

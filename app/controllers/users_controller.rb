@@ -13,6 +13,7 @@ before_filter :login_required, except: [:index, :create, :new]
   def new
     @user = User.new
     @last_email = ""
+    @local_ip = local_ip
   end
   
   #ToDo: - Passwortlogik rausnehmen

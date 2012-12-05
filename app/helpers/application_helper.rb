@@ -32,11 +32,11 @@ module ApplicationHelper
             concat tag("br")
             concat link_to('Edit your profile', profile_edit_path)
           else
-            concat link_to('View home', "profile/" + email)
-            concat tag("br")
-            concat link_to('Send private message', messages_overview_path)
-            concat tag("br")
-            concat link_to('View friends', friends_path)
+            concat link_to('View home', "profiles?email=" + email)
+            #oncat tag("br")
+            #concat link_to('Send private message', messages_overview_path)
+            #concat tag("br")
+            #concat link_to('View friends', friends_path)
           end
           concat tag("br")
         end)

@@ -13,7 +13,7 @@ class MessagesController < ApplicationController
   # GET /messages/1
   # GET /messages/1.json
   def show
-    init_displayed_user(params[:id])
+    init_displayed_user(current_user.id)
     @message = Message.find(params[:id])
     @message.read = true
     if @message.save
@@ -27,10 +27,10 @@ class MessagesController < ApplicationController
   # GET /messages/new
   # GET /messages/new.json
   def new
-    init_displayed_user(params[:id])
+    init_displayed_user(current_user.id)
     @message = Message.new
-    @users = get_all_user
-    @users.delete(current_user)
+    #@users = get_all_user
+    #@users.delete(current_user)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -40,14 +40,14 @@ class MessagesController < ApplicationController
 
   # GET /messages/1/edit
   def edit
-    init_displayed_user(params[:id])
+    init_displayed_user(current_user.id)
     @message = Message.find(params[:id])
   end
 
   # POST /messages
   # POST /messages.json
   def create
-    init_displayed_user(params[:id])
+    init_displayed_user(current_user.id)
     @message = Message.new(params[:message])
     @message.sender = current_user.email
     #@receiver = User.find_by_email(@message.receiver)
@@ -74,7 +74,6 @@ class MessagesController < ApplicationController
 
   # POST /messages/remotecreate
   def remote_create
-    init_displayed_user(params[:id])
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
     @message = Message.new
@@ -95,7 +94,7 @@ class MessagesController < ApplicationController
   # PUT /messages/1
   # PUT /messages/1.json
   def update
-    init_displayed_user(params[:id])
+    init_displayed_user(current_user.id)
     @message = Message.find(params[:id])
     respond_to do |format|
       if @message.update_attributes(params[:message])
@@ -111,7 +110,7 @@ class MessagesController < ApplicationController
   # DELETE /messages/1
   # DELETE /messages/1.json
   def destroy
-    init_displayed_user(params[:id])
+    init_displayed_user(current_user.id)
     @message = Message.find(params[:id])
     if @message.destroy
       logger.info("messages#destroy:  message destroyed!")
@@ -133,7 +132,6 @@ class MessagesController < ApplicationController
   
   # Get /messages/remotedestroy
   def remote_destroy
-    init_displayed_user(params[:id])
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
     receiver = parsed_json["receiver"]

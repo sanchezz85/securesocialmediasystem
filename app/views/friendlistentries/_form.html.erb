@@ -13,7 +13,7 @@
 
   <div class="field">
     <%= f.label :friend %><br />
-    <%= f.collection_select(:friend,@users, :email, :email) %>
+    <%= f.text_field :friend %>
   </div>
 
   <div class="actions">

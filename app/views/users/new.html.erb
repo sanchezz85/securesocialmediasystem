@@ -3,7 +3,9 @@
 <%= form_tag "/users" do %>
   <p>
   	<%= label_tag :email, "Email" %><br />
-    <%= text_field_tag :email, @last_email %>
+  	<%= text_field_tag :email, @last_email %>
+  	@
+  	<%= @local_ip %>
   </p>
   <p>
     <%= label_tag :password, "Password" %><br />

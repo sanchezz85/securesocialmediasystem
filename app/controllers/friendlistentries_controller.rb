@@ -17,8 +17,8 @@ class FriendlistentriesController < ApplicationController
     init_displayed_user(current_user.id)
     @friendlistentry = Friendlistentry.new
     #@users = get_all_user
-    @users = get_all_user
-    @users.delete(current_user)
+    #@users = get_all_user
+    #@users.delete(current_user)
     #current_user.friendlistentries.each do |entry| #remove friends
       #@user_to_be_deleted = User.find(entry.friend)
       #@users.delete(@user_to_be_deleted)
