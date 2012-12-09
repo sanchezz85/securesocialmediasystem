@@ -1,3 +1,8 @@
+<p>
+	Warning: The information you give here will be visible to all your friends. Please do not enter any information that you don't want your friends to know.
+	None of these informations will be visible to users that you do not add as friends or accept a friendship request from.
+</p>
+
 <%= form_for @profile,:url=> profiles_path  ,:html => {:multipart => true} do |f| %>
   <% if @profile.errors.any? %>
     <div id="error_explanation">

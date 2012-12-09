@@ -31,29 +31,35 @@ module ApplicationHelper
             concat tag("br")
             concat tag("br")
             concat link_to('Edit your profile', profile_edit_path)
+            concat tag("br")
           else
-            concat link_to('View home', "profiles?email=" + email)
+            #concat link_to('View home', "profiles?email=" + email)
             #oncat tag("br")
             #concat link_to('Send private message', messages_overview_path)
             #concat tag("br")
             #concat link_to('View friends', friends_path)
+            #concat tag("br")
+            if session[:remote_user_email] then
+              concat link_to('Back to your Home', '/profiles?email=' + session[:remote_user_email])
+            else
+              concat link_to('Back to your Home', '/profiles?email=' + current_user.email)
+            end
           end
-          concat tag("br")
         end)
       end)
       concat tag("br")
-      if !is_yours then
-        concat(content_tag(:center) do
-          concat(content_tag(:div, :class => "menu") do
-            if session[:remote_user_email] then
-              concat link_to('Back to your Home', 'profiles?email=' + session[:remote_user_email])
-            else
-              concat link_to('Back to your Home', 'profiles?email=' + current_user.email)
-            end
-          end)
-        end)
-        concat tag("br")
-      end
+      # if !is_yours then
+        # concat(content_tag(:center) do
+          # concat(content_tag(:div, :class => "menu") do
+            # if session[:remote_user_email] then
+              # concat link_to('Back to your Home', 'profiles?email=' + session[:remote_user_email])
+            # else
+              # concat link_to('Back to your Home', 'profiles?email=' + current_user.email)
+            # end
+          # end)
+        # end)
+        # concat tag("br")
+      # end
     end
   end
 end

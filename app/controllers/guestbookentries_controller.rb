@@ -42,7 +42,7 @@ class GuestbookentriesController < ApplicationController
       logger.info("in guestbookentries#new remote_user:")
     end
     logger.info("guestbookentry.sender = " + @guestbookentry.sender)
-    @guestbookentry.save
+    #@guestbookentry.save
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @guestbookentry }
@@ -71,12 +71,11 @@ class GuestbookentriesController < ApplicationController
   def create
     @guestbookentry = Guestbookentry.new(params[:guestbookentry])
     
-    #guestbookowner = User.find_by_email(@guestbookentry.receiver)
-    #init_displayed_user(guestbookowner.id)
-    
+    guestbookowner = User.find_by_email(@guestbookentry.receiver)
+        
     respond_to do |format|
       if @guestbookentry.save
-        format.html { redirect_to @guestbookentry, notice: 'Guestbookentry was successfully created.' }
+        format.html { redirect_to "/profiles?email=" + guestbookowner.email, notice: 'Guestbookentry was successfully created.' }
         format.json { render json: @guestbookentry, status: :created, location: @guestbookentry }
       else
         format.html { render action: "new" }

@@ -2,7 +2,7 @@
 
 <h1><%= @profile.email %>'s Home</h1>
 
-<% if @profile.gender != "" then %>
+<% if (@profile.gender != "") && (@profile.firstname != "") || (@profile.lastname != "") then %>
 	<% if @profile.gender = 'male' then %>
 		Mr 
 	<% else %>
