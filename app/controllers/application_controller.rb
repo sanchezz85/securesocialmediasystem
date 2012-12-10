@@ -58,34 +58,33 @@ class ApplicationController < ActionController::Base
       end
     end
     
-    # Authorize at central server
-#    if session[:user_email] then
-#      email = session[:user_email]
-#    elsif session[:remote_user_email] then
-#      email = session[:remote_user_email]
-#    end
-#    if email && session[:auth_token] then
-#      j = ActiveSupport::JSON
-#      # Try authorization by token
-#      #json_object = j.encode({})
-#      #open faraday connection and post json data to remote url
-#      connection = Faraday::Connection.new
-#      response = connection.post do |req|
-#        req.url  CENTRAL_SERVER_ADDRESS + "/ssms/user/login"
-#        req["Content-Type"] = "application/json"
-#        req.headers["ssms-token"] = session[:auth_token]
-#        req.body = "{}"
-#      end
-#      if response.status == 204 then
-#        # success
-#        session[:auth_token] = response.headers["ssms-token"]
-#        return true
-#      end
-#      flash[:csm] = j.decode(response.body).to_s
-#    end
-
-    return true
-        
+   #Authorize at central server
+    if session[:user_email] then
+      email = session[:user_email]
+    elsif session[:remote_user_email] then
+      email = session[:remote_user_email]
+    end
+    if email && session[:auth_token] then
+      j = ActiveSupport::JSON
+      # Try authorization by token
+      #json_object = j.encode({})
+      #open faraday connection and post json data to remote url
+      connection = Faraday::Connection.new
+      response = connection.get do |req|
+        req.url  CENTRAL_SERVER_ADDRESS + "/ssms/user/auth"
+        #req["Content-Type"] = ""
+        req.headers["ssms-token"] = session[:auth_token]
+        #req.body = "{}"
+     end
+      if response.status == 204 then
+        # success
+        session[:auth_token] = response.headers["ssms-token"]
+        return true
+      end
+     flash[:csm] = j.decode(response.body).to_s
+    end
+  
+    
     logger.info("sessions doesn't exist! -> Login")
     flash[:warning]='You are not logged in or your session timed out. Please login to continue.'
     session[:return_to]=request.fullpath

@@ -65,6 +65,7 @@ before_filter :login_required, except: [:index, :create, :new]
     if j.decode(response.body)["qrcode"] then
       if @user.save then
         flash[:qrcode] = j.decode(response.body)["qrcode"]
+        flash[:reset_token] = j.decode(response.body)["reset-token"]
         redirect_to "/pages?id=qrcode"
       else
         flash.now[:error] = "Error saving user to local database"

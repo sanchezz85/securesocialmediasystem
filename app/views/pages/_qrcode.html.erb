@@ -6,6 +6,13 @@
 		<%= image_tag(flash[:qrcode])%>
 	</center>
 </p>
+
+
+<p>Resetcode for google authenticator:<b><%=flash[:reset_token]%> </b></p>
+
+
 <p>
 	<%= link_to "Finish", log_in_path %>
 </p>
+
+
