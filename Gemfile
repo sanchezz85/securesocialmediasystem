@@ -16,7 +16,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer'
+  gem 'therubyracer'
 
   gem 'uglifier', '>= 1.0.3'
 end
@@ -25,7 +25,7 @@ gem 'jquery-rails'
 
 gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
 
-gem 'rake', '~> 10.0.1'
+gem 'rake', '~> 10.0.2'
 
 gem "faraday", :git => "https://github.com/technoweenie/faraday.git"
 

@@ -58,7 +58,7 @@ class SessionsController < ApplicationController
     parsed_json = j.decode(request.body)
     remote_user = User.new
     remote_user.email = parsed_json["email"]
-    remote_user.homeserver= parse_homeserver(@remote_user.email)
+    remote_user.homeserver= parse_homeserver(remote_user.email)
     session[:auth_token] = parsed_json["auth-token"]
     if remote_user.homeserver.eql?(local_ip) then
       # return to home server from remote
