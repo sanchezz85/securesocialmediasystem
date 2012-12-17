@@ -22,7 +22,21 @@ class ProfilesController < ApplicationController
         logger.info("remote_create for session is required!")
         #remote session creation for current user
         remote_url = create_server_url(parse_homeserver(params[:email])) + "/sessions/remotecreate"
-        response = post_to_remote_url(remote_url,current_user)
+        
+        # =>convert object into json
+        j = ActiveSupport::JSON
+        package = { "email" => current_user.email, "auth-token" => session[:auth_token] }
+        json_object = j.encode(package)
+        #open faraday connection and post json data to remote url
+        connection = Faraday::Connection.new
+        response = connection.post do |req|
+          req.url  remote_url
+          req["Content-Type"] = "application/json"
+          req.body = json_object 
+        end
+        response = (j.decode(response.body)).to_s 
+ 
+       
         logger.info("user sent to session#remote_create with result: " + response)
         stringlist = response.split('"')
         @session_id = stringlist[3]

@@ -58,7 +58,7 @@ class SessionsController < ApplicationController
     parsed_json = j.decode(request.body)
     remote_user = User.new
     remote_user.email = parsed_json["email"]
-    remote_user.homeserver= parse_homeserver(remote_user.email)
+    remote_user.homeserver= parse_homeserver(@remote_user.email)
     session[:auth_token] = parsed_json["auth-token"]
     if remote_user.homeserver.eql?(local_ip) then
       # return to home server from remote
@@ -67,10 +67,10 @@ class SessionsController < ApplicationController
       if session[:remote_user_email] 
         logger.info("session#remote_create: session already exists!")
       else
-        session[:remote_user_email] = remote_user.email
+        session[:remote_user_email] = @remote_user.email
         logger.info("session#remote_create: new session created! Session ID:" + request.session_options[:id])
         logger.info("session#remote_create: session[remote_user_email created]:" + session[:remote_user_email])
-        logger.info("remote_user.email: " + remote_user.email)
+        logger.info("remote_user.email: " + @remote_user.email)
       end
     end
     session[:auth_token] = auth_token

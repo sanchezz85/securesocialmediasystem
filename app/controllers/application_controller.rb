@@ -180,17 +180,18 @@ class ApplicationController < ActionController::Base
   
   #method for posting a object as json to a remote url
   protected
-  def post_to_remote_url(remote_url,user)
+  def post_to_remote_url(remote_url,object)
     #convert object into json
     j = ActiveSupport::JSON
-    package = { "email" => user.email, "auth-token" => session[:auth_token] }
-    json_object = j.encode(package)
+    #package = { "email" => user.email, "auth-token" => session[:auth_token] }
+    json_object = j.encode(object)
     #open faraday connection and post json data to remote url
     connection = Faraday::Connection.new
     response = connection.post do |req|
       req.url  remote_url
       req["Content-Type"] = "application/json"
-      req.body = json_object   
+      req.body = json_object 
+      #req.headers["ssms-token"] = session[:auth_token]  
     end
     return (j.decode(response.body)).to_s 
   end
