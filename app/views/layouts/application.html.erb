@@ -14,7 +14,7 @@
 
 <div id="user_nav" class="header">
   <% if current_user %>
-    Logged in as <%= current_user.email %>.
+    Logged in as <%= current_user.email %> with SessionID: <%=request.session_options[:id]%> .
     <%= link_to "Log out", log_out_path %>
     <br />
     <!-- <%= link_to "To your profile", my_profile_path%> -->
@@ -24,7 +24,7 @@
   <% end %>
   
   <% if session[:remote_user_email] %>
-  	<%= link_to "Back to Your Profile!", "http://192.168.1.78:3000/profiles" %>
+  	<%= link_to "Back to Your Profile!", REMOTE_SERVER_LINK_PREFIX+parse_homeserver(session[:remote_user_email])+"/profiles/?email="+session[:remote_user_email] %>
   <% end %>
   
   <% flash.each do |name, msg| %>

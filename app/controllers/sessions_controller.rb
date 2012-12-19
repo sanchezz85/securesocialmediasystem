@@ -54,16 +54,20 @@ class SessionsController < ApplicationController
   end
 
   def remote_create #ToDo: nur email übergeben, nicht den ganzen user
+    
     j = ActiveSupport::JSON
     parsed_json = j.decode(request.body)
+    
+    #logger.info("Session#remote_create: received json:" + parsed_json)
+    
     remote_user = User.new
     remote_user.email = parsed_json["email"]
     remote_user.homeserver= parse_homeserver(remote_user.email)
     session[:auth_token] = parsed_json["auth-token"]
-    if remote_user.homeserver.eql?(local_ip) then
+    #if remote_user.homeserver.eql?(local_ip) then
       # return to home server from remote
       session[:user_email] = remote_user.email
-    else
+    #else
       if session[:remote_user_email] 
         logger.info("session#remote_create: session already exists!")
       else
@@ -72,11 +76,11 @@ class SessionsController < ApplicationController
         logger.info("session#remote_create: session[remote_user_email created]:" + session[:remote_user_email])
         logger.info("remote_user.email: " + remote_user.email)
       end
-    end
-    session[:auth_token] = auth_token
+    #end
+    #session[:auth_token] = auth_token
     logger.info("remote_create: session created:" + parsed_json.to_s)
     render json: '{"session_id":"' + request.session_options[:id]+'"}'
-    
+   
     #if session[:remote_user_email]
     #  logger.info("remote_create: session created:" + parsed_json.to_s)
     #  render json: '{"session_id":"' + request.session_options[:id]+'"}'

@@ -42,13 +42,13 @@ class ApplicationController < ActionController::Base
       loaded_session = Session.find_by_session_id(params[:sessionid])
       data = Marshal.load(ActiveSupport::Base64.decode64(loaded_session.data))
       remote_user_email = data["remote_user_email"]
-      if is_remote_user?(params[:email])
+      #if is_remote_user?(params[:email])
         session[:remote_user_email] = remote_user_email
-      else
-        session[:user_email] = params[:email] 
-      end
+      #else
+        #session[:user_email] = params[:email] 
+      #end
       session[:auth_token] = data["auth_token"]
-      request.session_options[:id] =  params[:sessionid]
+      #request.session_options[:id] =  params[:sessionid]
       logger.info("Session id forwared:" + request.session_options[:id])
       if session[:remote_user_email]
         logger.info("remoter_user_email already exists!: " + session[:remote_user_email])
