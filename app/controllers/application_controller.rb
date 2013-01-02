@@ -5,12 +5,18 @@ class ApplicationController < ActionController::Base
   skip_before_filter :verify_authenticity_token
   
   helper_method :current_user
+  helper_method :remote_user
   helper_method :create_server_url
 
   #Get the current user (logged in)
   private
   def current_user
     @current_user ||= User.find_by_email(session[:user_email]) if session[:user_email]
+  end
+  
+  private
+  def remote_user
+    @remote_user ||= session[:remote_user_email] if session[:remote_user_email] 
   end
   
   #Create propper url to remote server
@@ -27,11 +33,6 @@ class ApplicationController < ActionController::Base
     else
       @displayed_user = nil
     end
-  end
-  
-  protected
-  def remote_user
-    return session[:remote_user_email]
   end
   
   protected

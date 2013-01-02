@@ -40,9 +40,9 @@ module ApplicationHelper
             #concat link_to('View friends', friends_path)
             #concat tag("br")
             if session[:remote_user_email] then
-              concat link_to('Back to your Home', '/profiles?email=' + session[:remote_user_email])
+              concat link_to('Back to your Home', '/profiles/?email=' + session[:remote_user_email])
             else
-              concat link_to('Back to your Home', '/profiles?email=' + current_user.email)
+              concat link_to('Back to your Home', '/profiles/?email=' + current_user.email)
             end
           end
         end)

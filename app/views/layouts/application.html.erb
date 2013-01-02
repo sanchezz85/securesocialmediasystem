@@ -19,12 +19,20 @@
     <br />
     <!-- <%= link_to "To your profile", my_profile_path%> -->
   <% else %>
-    <%= link_to "Sign up", sign_up_path %> or
-    <%= link_to "log in", log_in_path %>
+    <% if remote_user %>
+      Logged in as <%= remote_user %> with SessionID: <%=request.session_options[:id]%> .
+      <%= link_to "Log out", log_out_path %>
+      <br />
+    <% else %>
+      <%= link_to "Sign up", sign_up_path %> or
+      <%= link_to "log in", log_in_path %>
+    <% end %>
   <% end %>
   
+  <% if false %>
   <% if session[:remote_user_email] %>
   	<%= link_to "Back to Your Profile!", REMOTE_SERVER_LINK_PREFIX+parse_homeserver(session[:remote_user_email])+"/profiles/?email="+session[:remote_user_email] %>
+  <% end %>
   <% end %>
   
   <% flash.each do |name, msg| %>
@@ -32,10 +40,14 @@
   <% end %>
 </div>
 
-<% if current_user && @displayed_user %> 
+<% if current_user && @displayed_user %>
 	<% if @displayed_user.email == current_user.email %>
 		<%= menuArea(@displayed_user.email, true) %>
 	<% else %>
+		<%= menuArea(@displayed_user.email, false) %>
+	<% end %>
+<% else %>
+	<% if remote_user && @displayed_user %>
 		<%= menuArea(@displayed_user.email, false) %>
 	<% end %>
 <% end %>
