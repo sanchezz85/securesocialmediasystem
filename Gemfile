@@ -27,7 +27,9 @@ gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
 
 gem 'rake', '~> 10.0.2'
 
-gem "faraday", :git => "https://github.com/technoweenie/faraday.git"
+#gem "faraday", :git => "https://github.com/technoweenie/faraday.git"
+gem "faraday"
+#gem 'therubyracer'
 
 gem 'httparty'
 
