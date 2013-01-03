@@ -84,11 +84,11 @@
 <br/>
 
 <% @guestbookentries.each do |entry| %>
-	<%= major_block(entry.sender + "wrote:", entry.created_at.strftime("%d.%m.%y")) do %>
+	<%= major_block(entry.sender + " wrote:", entry.created_at) do %>
 		<%= entry.content %>
 		<% if current_user%>
 	    	<%if @profile.user_id == current_user.id %>
-	    		<br />
+	    		<br /><br />
 	    		<%= link_to 'Delete', delete_guestbookentry_path(entry), confirm: 'Are you sure?', method: :delete %>
 	   		<%end%>
    		<%end%>

@@ -89,6 +89,15 @@ a:hover {
 	padding: 0.5em 0.5em 0.5em 1em;
 }
 
+.message_line {
+	background-color: #b3ffa6;
+}
+
+.message_text {
+	margin: 0;
+	padding: 0.2em 0.5em 0.2em 0.5em;
+}
+
 img.profilepic {
 	border-width: 1px;
 	border-style: solid;

@@ -1,30 +1,28 @@
 <h1>Incoming messages</h1>
 
 <table>
-  <tr>
-    <th>Message from:</th>
-    <th>Subject:</th>
-    <th>Date:</th>
-    <th></th>
-    <th></th>
+  <tr class="message_line">
+    <th><p class="message_text">Message from:</p></th>
+    <th><p class="message_text">Subject:</p></th>
+    <th><p class="message_text">Date:</p></th>
+    <th><p class="message_text"></p></th>
   </tr>
 
 <% @incomingmessages.each do |message| %>
-  <tr>
+  <tr class="message_line">
   	
   	<% if message.read %>
-    	<td><%= message.sender %></td>
-    	<td><%= message.subject %></td>
-    	<td><%= message.created_at %></td>
+    	<td><p class="message_text"><%= message.sender %></p></td>
+    	<td><p class="message_text"><%= link_to message.subject, message %></p></td>
+    	<td><p class="message_text"><%= message.created_at %></p></td>
     <% else %>
-        <td><b><%= message.sender %></b></td>
-    	<td><b><%= message.subject %></b></td>
-    	<td><b><%= message.created_at %></b></td>
+        <td><p class="message_text"><b><%= message.sender %></b></p></td>
+    	<td><p class="message_text"><b><%= link_to message.subject, message %></b></p></td>
+    	<td><p class="message_text"><b><%= message.created_at %></b></p></td>
 
-    <% end %>	
+    <% end %>
     
-    <td><%= link_to 'Show', message %></td>
-    <td><%= link_to 'Delete', message, confirm: 'Are you sure?', method: :delete %></td>
+    <td><p class="message_text"><%= link_to 'Delete', message, confirm: 'Are you sure?', method: :delete %></p></td>
   </tr>
 <% end %>
 </table>
@@ -34,21 +32,19 @@
 <h1>Outgoing messages</h1>
 
 <table>
-  <tr>
-    <th>Message sent to:</th>
-    <th>Subject:</th>
-    <th>Date:</th>
-    <th></th>
-    <th></th>
+  <tr class="message_line">
+    <th><p class="message_text">Message sent to:</p></th>
+    <th><p class="message_text">Subject:</p></th>
+    <th><p class="message_text">Date:</p></th>
+    <th><p class="message_text"></p></th>
   </tr>
 
 <% @outgoingmessages.each do |message| %>
-  <tr>
-    <td><%= message.receiver %></td>
-    <td><%= message.subject %></td>
-    <td><%= message.created_at %></td>
-    <td><%= link_to 'Show', message %></td>
-    <td><%= link_to 'Delete', message, confirm: 'Are you sure?', method: :delete %></td> <!-- it's not a bug, it's a feature! (Delete Outgoingmessage->Delete Ingoingmessage)-->
+  <tr class="message_line">
+    <td><p class="message_text"><%= message.receiver + "&nbsp;" %></p></td>
+    <td><p class="message_text"><%= link_to message.subject, message %></p></td>
+    <td><p class="message_text"><%= message.created_at %></p></td>
+    <td><p class="message_text"><%= link_to 'Delete', message, confirm: 'Are you sure?', method: :delete %></p></td> <!-- it's not a bug, it's a feature! (Delete Outgoingmessage->Delete Ingoingmessage)-->
   </tr>
 <% end %>
 </table>
