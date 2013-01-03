@@ -86,4 +86,8 @@ module ApplicationHelper
     end
   end
   
+  def clear_float()
+    tag(:br, :class => "float_clear")
+  end
+  
 end
