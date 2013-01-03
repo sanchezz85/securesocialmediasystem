@@ -1,5 +1,12 @@
-<h1>Listing guestbookentries</h1>
+<h1>Guestbook:</h1>
 
+<% @guestbookentries.each do |guestbookentry| %>
+	<%= major_block(guestbookentry.sender + "wrote:") do %>
+		<%= guestbookentry.content %>
+	<% end %>
+<% end %>
+
+<!--
 <table>
   <tr>
     <th>Sender</th>
@@ -21,7 +28,8 @@
   </tr>
 <% end %>
 </table>
+-->
 
 <br />
 
-<%= link_to 'New Guestbookentry', new_guestbookentry_path %>
+<%= link_to 'Post', new_guestbookentry_path %>

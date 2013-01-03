@@ -64,6 +64,31 @@ a:hover {
 	padding: 5px;
 }
 
+.major_block_wrapper {
+	width: 90%;
+	margin: 0 0 2em 0;
+}
+
+.major_block_headline {
+	padding: 0.2em 0.5em 0.2em 0.5em;
+	background-color: #b3ffa6;
+}
+
+.major_block_title {
+	font-size: 1.2em;
+	font-weight: bold;
+	float: left;
+}
+
+.major_block_date {
+	font-size: 1.2em;
+	float: right;
+}
+
+.major_block_text {
+	padding: 0.5em 0.5em 0.5em 1em;
+}
+
 img.profilepic {
 	border-width: 1px;
 	border-style: solid;

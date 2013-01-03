@@ -14,13 +14,13 @@
 
 <div id="user_nav" class="header">
   <% if current_user %>
-    Logged in as <%= current_user.email %> with SessionID: <%=request.session_options[:id]%> .
+    Logged in as <%= current_user.email %>
     <%= link_to "Log out", log_out_path %>
     <br />
     <!-- <%= link_to "To your profile", my_profile_path%> -->
   <% else %>
     <% if remote_user %>
-      Logged in as <%= remote_user %> with SessionID: <%=request.session_options[:id]%> .
+      Logged in as <%= remote_user %>
       <%= link_to "Log out", log_out_path %>
       <br />
     <% else %>
@@ -36,7 +36,9 @@
   <% end %>
   
   <% flash.each do |name, msg| %>
-    <%= content_tag :div, msg, :id => "flash_#{name}" %>
+    <% if (name == "warning") || (name=="notice") || (name=="error") %>
+      <%= content_tag :div, msg, :id => "flash_#{name}" %>
+    <% end %>
   <% end %>
 </div>
 

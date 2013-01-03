@@ -1,10 +1,11 @@
-
+<h3><center>Welcome to Secure Social Media System.</center></h3>
 
 <%if current_user %>
 
-<b><%= link_to 'Your Profile', profiles_path %></b>
+<b><%= link_to 'To your home', profiles_path %></b>
+
+<% else %>
+
+Please log in.
 
 <%end%>
-
-
-<h3><center>Startseite/Beschreibung des Secure-SocialMediaSystems</center></h3>
