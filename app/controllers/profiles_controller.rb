@@ -27,7 +27,11 @@ class ProfilesController < ApplicationController
         
         # =>convert object into json
         j = ActiveSupport::JSON
-        package = { "email" => current_user.email, "auth-token" => session[:auth_token] }
+        if current_user
+          package = { "email" => current_user.email, "auth-token" => session[:auth_token] }
+        else
+          package = { "email" => remote_user, "auth-token" => session[:auth_token] }
+        end
         json_object = j.encode(package)
         #open faraday connection and post json data to remote url
         
