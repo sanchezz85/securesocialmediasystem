@@ -77,9 +77,19 @@
 <br/>
 <br/>
 
-<h1>Guestbook</h1> <b><%= link_to 'New Guestbook Entry', new_guestbookentry_path(@profile) %></b>  
+<h1>Guestbook</h1>
+
+<b><%= link_to 'Post to Guestbook', new_guestbookentry_path(@profile) %></b>  
 
 <br/>
+
+<% @guestbookentries.each do |guestbookentry| %>
+	<%= major_block(guestbookentry.sender + "wrote:") do %>
+		<%= guestbookentry.content %>
+	<% end %>
+<% end %>
+
+<% if false %>
 
 <table>
   <tr>
@@ -105,4 +115,5 @@
 <% end %>
 </table>
 
+<% end %>
 
