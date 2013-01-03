@@ -41,7 +41,7 @@
 
 <% @outgoingmessages.each do |message| %>
   <tr class="message_line">
-    <td><p class="message_text"><%= message.receiver + "&nbsp;" %></p></td>
+    <td><p class="message_text"><%= message.receiver %></p></td>
     <td><p class="message_text"><%= link_to message.subject, message %></p></td>
     <td><p class="message_text"><%= message.created_at %></p></td>
     <td><p class="message_text"><%= link_to 'Delete', message, confirm: 'Are you sure?', method: :delete %></p></td> <!-- it's not a bug, it's a feature! (Delete Outgoingmessage->Delete Ingoingmessage)-->
