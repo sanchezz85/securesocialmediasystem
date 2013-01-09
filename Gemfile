@@ -29,7 +29,7 @@ gem 'rake', '~> 10.0.2'
 
 #gem "faraday", :git => "https://github.com/technoweenie/faraday.git"
 gem "faraday"
-#gem 'therubyracer'
+gem 'therubyracer'
 
 gem 'httparty'
 

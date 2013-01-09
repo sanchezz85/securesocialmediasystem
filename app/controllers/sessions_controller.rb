@@ -27,7 +27,9 @@ class SessionsController < ApplicationController
     connection = Faraday::Connection.new
     response = connection.post do |req|
       req.url  CENTRAL_SERVER_ADDRESS + "/ssms/user/login"
-      req["Content-Type"] = "application/json"
+      req["Content-Type"] = "application/json; charset=utf-8"
+      req["Accept-Charset"] = "utf-8"
+      req["Accept"] = "application/json"
       req.body = json_object
     end
     
